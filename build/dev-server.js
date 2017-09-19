@@ -40,6 +40,12 @@ compiler.plugin('compilation', function (compilation) {
   })
 })
 
+// handle fallback for HTML5 history API
+app.use(require('connect-history-api-fallback')())
+
+// serve webpack bundle output
+app.use(devMiddleware)
+
 // proxy api requests
 Object.keys(proxyTable).forEach(function (context) {
   var options = proxyTable[context]
@@ -48,12 +54,6 @@ Object.keys(proxyTable).forEach(function (context) {
   }
   app.use(proxyMiddleware(options.filter || context, options))
 })
-
-// handle fallback for HTML5 history API
-app.use(require('connect-history-api-fallback')())
-
-// serve webpack bundle output
-app.use(devMiddleware)
 
 // enable hot-reload and state-preserving
 // compilation error display

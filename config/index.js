@@ -32,11 +32,16 @@ module.exports = {
   build:build, // 多頁面生成
   dev: {
     env: require('./dev.env'),
-    port: 8071,
+    port: 8072,
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      '/rest/api': {
+        target: 'http://www.jihui88.com',
+        changeOrigin: true
+      }
+    },
     cssSourceMap: false
   }
 }

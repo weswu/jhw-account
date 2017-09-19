@@ -317,6 +317,7 @@ body {
 	-moz-transition:all 0.3s ease 0s;
 	-webkit-transition:all 0.3s ease 0s;
 	-o-transition:all 0.3s ease 0s;
+  padding-right: 5px;
 }
 #footer .foot2 .foot2_1 a:hover {
 	color:#fff;
