@@ -21,12 +21,17 @@
             <li class="item06"><a href="register.html" class="fr">免费注册</a></li>
             <li class="item07">第三方账号登录</li>
             <li class="item08">
-              <a href="javascript:;" class="iconfontyyy2 icon_qq">&#xe65b;</a>
-              <a href="javascript:;" class="iconfontyyy2 icon_weixin">&#xe619;</a>
+              <a @click="qqLogin"href="javascript:;" class="iconfontyyy2 icon_qq">&#xe65b;</a>
+              <a @click="wxLogin" href="javascript:;" class="iconfontyyy2 icon_weixin">&#xe619;</a>
             </li>
           </ul>
         </div>
       </div>
+      <div class="oAuth__content" v-if="weixin">
+        <a @click="close" href="javascript:;"  class="iconfontyyy2 icon_close">&#xe66d;</a>
+        <div id="wxlogin_container"></div>
+      </div>
+      <UserBind :openid="openid" :type="type" :oauthtype="oauthtype" v-if="openid !== ''"></UserBind>
     </div>
   </div>
   <div id="footer">
@@ -54,22 +59,37 @@
 </div>
 </template>
 <script>
+import UserBind from './userBind.vue'
 export default {
-  data() {
+  data　() {
     return {
       model: {
         username: '',
-        subusername: '',
         password: '',
         randCode: '',
+        type: '0',
         redirectURL: '',
         appId: '',
         state: null,
-        lanId: 1
+        lanId: '1'
       },
       checked: false,
-      verifyPic: ''
+      verifyPic: '',
+      // 授权弹出框
+      weixin: false,
+      // 用户绑定页面数据
+      openid: '',
+      type: '',
+      oauthtype: ''
     }
+  },
+  components: {
+    UserBind
+  },
+  created () {
+    this.openid = this.getUrlParam('openid') || ''
+    this.type = this.getUrlParam('type') || ''
+    this.oauthtype = this.getUrlParam('oauthtype') || ''
   },
   methods: {
     refreshCode () {
@@ -78,16 +98,90 @@ export default {
     check () {
       this.checked = !this.checked
     },
-    submit() {
+    submit () {
+      if (this.randCode === '') {alert('请输入验证码')}
+      if (this.username === '') {alert('请输入账号')}
+      if (this.checked) {this.model.type = '1'} else {this.model.type = '0', this.subusername = ''}
       $.ajax({
         url: '/rest/api/user/login',
         type: 'post',
         data: {
           model: JSON.stringify(this.model)
         },
-        success: function(result) {
+        success: function(res) {
+          if (res.success) {
+            console.log('login')
+
+          } else{
+            alert(res.msg)
+          }
         }
       })
+    },
+    pcLogin(skey, callback) {
+      var url = "http://pc.jihui88.com/pc/skey.html?skey=" + skey;
+      var $iframe = $('<iframe src=""></iframe>')
+      $('body').append($iframe)
+      $iframe.attr('src', url)
+      setTimeout(function() { $iframe.remove(); if (callback) callback.call(this) }, 1000)
+    },
+    // qq登录
+    qqLogin: function() {
+      var ctx = this;
+      $.ajax({
+        url: '/user/oauth',
+        data: {
+          requestType: 'state'
+        },
+        success: function(result) {
+          if (result.success) {
+            window.location.href = 'https://graph.qq.com/oauth/show?which=ConfirmPage&display=pc&client_id=101370473&response_type=code&state=' + result.attributes.data + '_' + ctx.model.get('type') + '_qq' + "&scope=&display=&redirect_uri=" +
+              encodeURIComponent("http://www.jihui88.com/rest/api/user/oauth")
+          }
+        }
+      })
+    },
+    // 微信登录
+    wxLogin () {
+      var ctx = this
+      this.weixin = true
+      if (ctx.wxShow) { return false}
+      $.ajax({
+        url: '/user/oauth',
+        data: {
+          requestType: 'state'
+        },
+        success: function(result) {
+          if (result.success) {
+            ctx.wxShow = true
+            new WxLogin({
+              id: 'wxlogin_container',
+              appid: 'wx308c58370e47720c',
+              scope: 'snsapi_login',
+              redirect_uri: encodeURIComponent('http://www.jihui88.com/rest/api/user/oauth'),
+              state: result.attributes.data + '_' + ctx.model.type + '_weixin',
+              style: 'black',
+              href: ''
+            })
+          }
+        }
+      })
+      // 扫描后 http://www.jihui88.com/member/login.html?openid=oBtE4wSbFxg7nW95t4VfiXG4cjVo&type=0&oauthtype=weixin
+    },
+    close () {
+      this.weixin = false
+    },
+    getUrlParam (name) {
+      let url = location.search //获取url中"?"符后的字串
+      if (url.indexOf("?") !== -1) {
+        let str = url.substr(1)
+        let strs = str.split("&")
+        for(let i = 0; i < strs.length; i ++) {
+          if (strs[i].split("=")[0] === name) {
+            return strs[i].split("=")[1]
+          }
+        }
+      }
     }
   }
 }
@@ -98,5 +192,23 @@ transition: opacity .5s
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active in below version 2.1.8 */ {
 opacity: 0
+}
+.oAuth__content{
+  position: absolute;
+top: 169px;
+width: 419px;
+background: #fff;
+text-align: center;min-height: 375px;
+}
+.icon_close{
+  float:right;font-size: 32px; color: #ddd;
+  transition: all 0.3s ease 0s;
+-moz-transition: all 0.3s ease 0s;
+-webkit-transition: all 0.3s ease 0s;
+-o-transition: all 0.3s ease 0s;
+  margin-right: 10px;
+}
+.icon_close:hover {
+    color: #aaa;
 }
 </style>

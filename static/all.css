@@ -507,7 +507,7 @@ body {
 	display:inline-block;
 	position:absolute;
 	top:50%;
-	right:15%;
+	right:14%;
 	margin:-12px 0 0 0;
 	height:24px;
 }
@@ -526,7 +526,7 @@ body {
 #head .content li.item05 a:hover {
 	color:#333;
 }
-#head .content li.item06 #model-randCode {
+#head .content li.item06 .randCode {
 	width:60%;
 }
 #head .content li.item06 .refreshCellphoneCode {
