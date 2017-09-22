@@ -10,7 +10,7 @@
       <div id="register-success" v-if="reSuccess">
         申请成功！验证邮箱后即可登录后台&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:;" @click="toMail">[登录我的邮箱]</a>
       </div>
-      <div class="content">
+      <div class="content" v-if="!reSuccess">
         <ul>
           <li class="item01">欢迎注册机汇网</li>
           <li class="item02">
@@ -26,26 +26,26 @@
   					    </select>
           </li>
           <li class="item03">
-            <input v-model="model.username" @change="valiUsername" name="username" type="text" class=" " placeholder="请设置机汇网账号">
+            <input v-model="model.username" @change="valiUsername" name="username" type="text" placeholder="请设置机汇网账号">
             <div class="tip">
               <em></em> 输入值长度不小于4！
             </div>
             <span class="error" v-if="usernameError.length > 1">
-              <span class="error-icon">！</span>{{usernameError}}
+              {{usernameError}}
             </span>
           </li>
           <li class="item04">
-            <input v-model="model.cellphone" @change="valiCellphone" type="text" class=" " placeholder="请输入手机号码">
+            <input v-model="model.cellphone" type="text" placeholder="请输入手机号码">
             <span class="tip2">+86</span>
             <div class="tip">
               <em></em> 输入正确格式手机号！
             </div>
             <span class="error" v-if="phoneError.length > 1">
-              <span class="error-icon">！</span>{{phoneError}}
+              {{phoneError}}
             </span>
           </li>
           <li class="item05">
-            <input v-model="model.imgCode" name="imgCode" type="text" class=" " placeholder="验证码">
+            <input v-model="model.imgCode" name="imgCode" type="text" placeholder="验证码">
             <img :src="'http://www.jihui88.com/veriImg'+verifyPic" @click="refreshCode"/>
             <a class="refreshCode" href="javascript:;" @click="refreshCode">换一张？</a>
             <div class="tip">
@@ -60,25 +60,31 @@
             </div>
           </li>
           <li class="item07">
-            <input v-model="model.email" @change="valiEmail" name="email" type="text" class=" " placeholder="E-mail">
+            <input v-model="model.email" @change="valiEmail" name="email" type="text" placeholder="E-mail">
             <div class="tip">
               <em></em> 输入正确邮箱！
             </div>
             <span class="error" v-if="emailError.length > 1">
-              <span class="error-icon">！</span>{{emailError}}
+              {{emailError}}
             </span>
           </li>
           <li class="item08">
-            <input v-model="model.password" name="password" type="password" class=" " placeholder="设置您的登录密码">
+            <input v-model="model.password" name="password" type="password" placeholder="设置您的登录密码">
             <div class="tip">
               <em></em> 输入您的登录密码！
             </div>
+            <span class="error" v-if="passwordError.length > 1">
+              {{passwordError}}
+            </span>
           </li>
           <li class="item09">
-            <input v-model="model.rePassword" name="password" value="" type="password" class=" " placeholder="请再次输入密码">
+            <input v-model="model.rePassword" name="rePassword value="" type="password"  placeholder="请再次输入密码">
             <div class="tip">
               <em></em> 请再次输入密码！
             </div>
+            <span class="error" v-if="rePasswordError.length > 1">
+              {{rePasswordError}}
+            </span>
           </li>
           <li class="item10">
             <button id="submit" type="button" class="button button-primary" @click="submit">注册</button>
@@ -103,32 +109,114 @@ export default {
       count: 20000,
       reSuccess: false,
       verifyPic: '',
+      // error
       usernameError: '',
       emailError:'',
       phoneError: '',
+      passwordError: '',
+      rePasswordError: '',
       model: {
         username: '',
-        domain: 'jihui88.com'
+        password: '',
+        email: '',
+        randCode: '',
+        domain: 'jihui88.com',
+        cellphone: '',
+        imgCode: '',
+        rePassword: ''
       }
     }
   },
   created () {
     this.countAjax()
+    this.redirectUrl = this.getUrlParam('redirectUrl') || ''
+  },
+  computed: {
+    username () {
+      return this.model.username
+    },
+    cellphone () {
+      return this.model.cellphone
+    },
+    email () {
+      return this.model.email
+    },
+    password () {
+      return this.model.password
+    },
+    rePassword () {
+      return this.model.rePassword
+    }
+  },
+  watch: {
+    username (newValue, oldValue) {
+      if (newValue.length < 4) {
+        this.usernameError = '账号长度不小于4！'
+      } else {
+        this.usernameError = ''
+      }
+    },
+    cellphone (newValue, oldValue) {
+      let phone = /^1[3|4|5|7|8][0-9]\d{4,8}$/
+      if (phone.test(newValue)) {
+        this.phoneError = ''
+      } else {
+        this.phoneError = '不是有效的手机号码！'
+      }
+    },
+    email (newValue, oldValue) {
+      let email = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+      if (email.test(newValue)) {
+        this.emailError = ''
+      } else {
+        this.emailError = '不是有效的邮箱地址！'
+      }
+    },
+    password (newValue, oldValue) {
+      if (newValue.length < 6) {
+        this.passwordError = '密码长度不小于6！'
+      } else if (this.model.rePassword !== '') {
+        if (newValue !== this.model.rePassword) {
+          this.passwordError = '两次密码不一致！'
+        } else {
+          this.passwordError = ''
+          this.rePasswordError = ''
+        }
+      } else {
+        this.passwordError = ''
+      }
+    },
+    rePassword (newValue, oldValue) {
+      if (newValue.length < 6) {
+        this.rePasswordError = '密码长度不小于6！'
+      } else if (this.model.password !== '') {
+        if (newValue !== this.model.password) {
+          this.rePasswordError = '两次密码不一致！'
+        } else {
+          this.passwordError = ''
+          this.rePasswordError = ''
+        }
+      } else {
+        this.rePasswordError = ''
+      }
+    }
   },
   methods: {
     valiUsername () {
       var ctx = this
-      $.ajax({
-        type: 'get',
-        url: '/rest/api/user/validate?vali-username=' + this.model.username,
-        success: function(res) {
-          if (res.success) {
-            ctx.usernameError = ''
-          } else {
-            ctx.usernameError = res.msg
+      if (this.model.username.length > 4) {
+        $.ajax({
+          type: 'get',
+          url: '/rest/api/user/validate?vali-username=' + this.model.username,
+          success: function(res) {
+            if (res.success) {
+              ctx.usernameError = ''
+            } else {
+              ctx.usernameError = res.msg || ''
+            }
           }
-        }
-      })
+        })
+      }
     },
     valiEmail () {
       var ctx = this
@@ -139,18 +227,10 @@ export default {
           if (res.success) {
             ctx.emailError = ''
           } else {
-            ctx.emailError = res.msg
+            ctx.emailError = res.msg || ''
           }
         }
       })
-    },
-    valiCellphone () {
-      let phone = /^1[3|4|5|7|8][0-9]\d{4,8}$/
-      if (phone.test(this.model.cellphone)) {
-        this.phoneError = ''
-      } else {
-        this.phoneError = '输入正确格式手机号'
-      }
     },
     refreshCellphoneCode (e) {
       var ctx = this
@@ -169,7 +249,6 @@ export default {
         },
         success: function (response) {
           if (response.success) {
-
           } else {
             ctx.countdown = 0
             alert(response.msg)
@@ -194,13 +273,22 @@ export default {
       },1000)
     },
     submit () {
+      var ctx = this
+      if (this.model.username === '') { return alert('请输入注册账号') }
       $.ajax({
-        type: 'get',
-        url: '/user/member_count',
-        data: {},
-        success: function(result) {
-          window.clearInterval(ctx.t1)
-          ctx.t2 = window.setInterval('ctx.remainTime(parseInt(' + result.attributes.data + '))', 50)
+        type: 'post',
+        url: '/rest/api/user/register',
+        data: {
+          model: JSON.stringify(this.model)
+        },
+        success: function(res) {
+          if (res.success) {
+            debugger
+            // window.location.href = ctx.redirectUrl || "http://www.jihui88.com/member/index.html"
+          } else{
+            ctx.refreshCode()
+            ctx.refreshCellphoneCode()
+          }
         }
       })
     },
@@ -217,26 +305,45 @@ export default {
     refreshCode () {
       this.verifyPic = '?time=' + new Date().getTime()
     },
-    remainTime (s) {
-      if (this.count < s) {
-        this.count = count + 399
-      }else{
-        this.count = s
-        window.clearInterval(this.t2)
-      }
-    },
     countAjax () {
       var ctx = this
-      this.t1 = window.setInterval('this.remainTime(50000)', 100)
+      this.t1 = window.setInterval(function() {
+        if (ctx.count < 50000) {
+          ctx.count = ctx.count + 399
+        } else {
+          ctx.count = 50000
+          window.clearInterval(ctx.t1)
+        }
+      }, 100)
       $.ajax({
         type: 'get',
         url: '/user/member_count',
         data: {},
-        success: function(result) {
-          window.clearInterval(ctx.t1)
-          ctx.t2 = window.setInterval('ctx.remainTime(parseInt(' + result.attributes.data + '))', 50)
+        success: function(res) {
+          if(res.success) {
+            ctx.t2 = window.setInterval(function () {
+              if (ctx.count < res.attributes.data) {
+                ctx.count = ctx.count + 399
+              } else {
+                ctx.count = res.attributes.data
+                window.clearInterval(ctx.t2)
+              }
+            }, 50)
+          }
         }
       })
+    },
+    getUrlParam (name) {
+      let url = location.search //获取url中"?"符后的字串
+      if (url.indexOf("?") !== -1) {
+        let str = url.substr(1)
+        let strs = str.split("&")
+        for(let i = 0; i < strs.length; i ++) {
+          if (strs[i].split("=")[0] === name) {
+            return strs[i].split("=")[1]
+          }
+        }
+      }
     }
   }
 }
@@ -247,7 +354,7 @@ export default {
     background: #fbfbfb;
     padding: 20px;
     width: 36%;
-    margin: 20px auto 0 auto;
+    margin: 60px auto 60px auto;
     color: #999;
     font-size: 12px;
   }
@@ -258,10 +365,7 @@ export default {
     color: #444
   }
   .error{
-    color: #999;
+    color: #a94442;
     padding-left: 10px;
-  }
-  .error-icon{
-    color: #f00
   }
 </style>

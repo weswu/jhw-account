@@ -99,8 +99,8 @@ export default {
       this.checked = !this.checked
     },
     submit () {
-      if (this.randCode === '') {alert('请输入验证码')}
-      if (this.username === '') {alert('请输入账号')}
+      if (this.model.randCode === '') { return alert('请输入验证码') }
+      if (this.model.username === '') { return alert('请输入账号') }
       if (this.checked) {this.model.type = '1'} else {this.model.type = '0', this.subusername = ''}
       $.ajax({
         url: '/rest/api/user/login',
@@ -110,8 +110,7 @@ export default {
         },
         success: function(res) {
           if (res.success) {
-            console.log('login')
-
+            window.location.href = "http://www.jihui88.com/member/index.html"
           } else{
             alert(res.msg)
           }
