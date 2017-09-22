@@ -8,13 +8,13 @@
         <div class="title">会员登录</div>
         <div class="content">
           <ul>
-            <li class="item01"><input name="username" v-model="model.username" type="text" placeholder="请输入账号/公司账号"></li>
+            <li class="item01"><input name="username" v-model="model.username" @keyup.enter="submit" type="text" placeholder="请输入账号/公司账号"></li>
             <transition name="fade">
-              <li class="item01" v-if="checked"><input name="subusername" v-model="model.subusername" type="text" placeholder="请输入员工账号"></li>
+              <li class="item01" v-if="checked"><input name="subusername" v-model="model.subusername" @keyup.enter="submit" type="text" placeholder="请输入员工账号"></li>
             </transition>
-            <li class="item02"><input name="password" v-model="model.password" type="password" placeholder="请输入密码"></li>
+            <li class="item02"><input name="password" v-model="model.password" @keyup.enter="submit" type="password" placeholder="请输入密码"></li>
             <li class="item03">
-              <input type="text" id="model-randCode" name="randCode" v-model="model.randCode" class="fl yzm" placeholder="请输入验证码">
+              <input type="text" id="model-randCode" name="randCode" v-model="model.randCode" @keyup.enter="submit" class="fl yzm" placeholder="请输入验证码">
               <img :src="'http://www.jihui88.com/veriImg'+verifyPic"  @click="refreshCode"/><a class="refreshCode" @click="refreshCode" href="javascript:;">换一张？</a></li>
             <li class="item04"><input type="checkbox" v-model="checked"><label @click="check">使用员工账号登录</label><a href="forget_password.html" class="fr">忘记密码</a></li>
             <li class="item05"><button id="submit" type="button" class="submit" @click="submit">登录</button></li>
@@ -90,6 +90,7 @@ export default {
     this.openid = this.getUrlParam('openid') || ''
     this.type = this.getUrlParam('type') || ''
     this.oauthtype = this.getUrlParam('oauthtype') || ''
+    this.redirectUrl = this.getUrlParam('redirectUrl') || ''
   },
   methods: {
     refreshCode () {
@@ -98,10 +99,12 @@ export default {
     check () {
       this.checked = !this.checked
     },
-    submit () {
+    submit (e) {
+      var ctx = this
       if (this.model.randCode === '') { return alert('请输入验证码') }
       if (this.model.username === '') { return alert('请输入账号') }
       if (this.checked) {this.model.type = '1'} else {this.model.type = '0', this.subusername = ''}
+      $(e.currentTarget).html('登录中...')
       $.ajax({
         url: '/rest/api/user/login',
         type: 'post',
@@ -110,10 +113,11 @@ export default {
         },
         success: function(res) {
           if (res.success) {
-            window.location.href = "http://www.jihui88.com/member/index.html"
+            window.location.href = ctx.redirectUrl || "http://www.jihui88.com/member/index.html"
           } else{
             alert(res.msg)
           }
+          $(e.currentTarget).html('登录')
         }
       })
     },
@@ -128,13 +132,13 @@ export default {
     qqLogin: function() {
       var ctx = this;
       $.ajax({
-        url: '/user/oauth',
+        url: '/rest/api/user/oauth',
         data: {
           requestType: 'state'
         },
-        success: function(result) {
-          if (result.success) {
-            window.location.href = 'https://graph.qq.com/oauth/show?which=ConfirmPage&display=pc&client_id=101370473&response_type=code&state=' + result.attributes.data + '_' + ctx.model.get('type') + '_qq' + "&scope=&display=&redirect_uri=" +
+        success: function(res) {
+          if (res.success) {
+            window.location.href = 'https://graph.qq.com/oauth/show?which=ConfirmPage&display=pc&client_id=101370473&response_type=code&state=' + res.attributes.data + '_' + ctx.model.type + '_qq' + "&scope=&display=&redirect_uri=" +
               encodeURIComponent("http://www.jihui88.com/rest/api/user/oauth")
           }
         }
@@ -146,19 +150,19 @@ export default {
       this.weixin = true
       if (ctx.wxShow) { return false}
       $.ajax({
-        url: '/user/oauth',
+        url: '/rest/api/user/oauth',
         data: {
           requestType: 'state'
         },
-        success: function(result) {
-          if (result.success) {
+        success: function(res) {
+          if (res.success) {
             ctx.wxShow = true
             new WxLogin({
               id: 'wxlogin_container',
               appid: 'wx308c58370e47720c',
               scope: 'snsapi_login',
               redirect_uri: encodeURIComponent('http://www.jihui88.com/rest/api/user/oauth'),
-              state: result.attributes.data + '_' + ctx.model.type + '_weixin',
+              state: res.attributes.data + '_' + ctx.model.type + '_weixin',
               style: 'black',
               href: ''
             })
@@ -186,28 +190,9 @@ export default {
 }
 </script>
 <style>
-.fade-enter-active {
-transition: opacity .5s
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active in below version 2.1.8 */ {
-opacity: 0
-}
-.oAuth__content{
-  position: absolute;
-top: 169px;
-width: 419px;
-background: #fff;
-text-align: center;min-height: 375px;
-}
-.icon_close{
-  float:right;font-size: 32px; color: #ddd;
-  transition: all 0.3s ease 0s;
--moz-transition: all 0.3s ease 0s;
--webkit-transition: all 0.3s ease 0s;
--o-transition: all 0.3s ease 0s;
-  margin-right: 10px;
-}
-.icon_close:hover {
-    color: #aaa;
-}
+.fade-enter-active{transition:opacity .5s}
+.fade-enter,.fade-leave-to{opacity:0}
+.oAuth__content{position:absolute;top:169px;width:419px;background:#fff;text-align:center;min-height:375px}
+.icon_close{font-size:32px;color:#ddd;transition:all .3s ease 0s;-moz-transition:all .3s ease 0s;-webkit-transition:all .3s ease 0s;-o-transition:all .3s ease 0s;position:absolute;right:10px}
+.icon_close:hover{color:#aaa}
 </style>

@@ -82,7 +82,7 @@ export default {
       if (this.isUser === '00') { this.subusername = null, this.email = '' }
       $.ajax({
         type: 'post',
-        url: '/user/oauthBind',
+        url: '/rest/api/user/oauthBind',
         data: {
           model: JSON.stringify({
             oauthType: ctx.oauthtype,
@@ -94,25 +94,25 @@ export default {
             type: ctx.type // 账号类型 {'0': '企业账号', '1': '员工账号', '2': '企业会员账号'}
           })
         },
-        success: function (result) {
-          if (result.success) {
+        success: function (res) {
+          if (res.success) {
             window.location.href = "http://www.jihui88.com/member/index.html"
           } else {
-            if (result.msgType === 'bindUser') {
+            if (res.msgType === 'bindUser') {
               // 跳转到用户绑定列表，并带上openid过去
               alert('未绑定用户')
-            } else if (result.msgType === 'oauth_none') {
-              alert(result.msg)
+            } else if (res.msgType === 'oauth_none') {
+              alert(res.msg)
               setTimeout(function() {
                 window.location.href="http://www.jihui88.com/member/login.html"
               }, 1000)
-            } else if (result.msg === '账号未验证'){
+            } else if (res.msg === '账号未验证'){
               alert('绑定成功， 请先登录邮箱进行账号验证，验证通过后即可快捷登录')
               setTimeout(function() {
                 window.location.href="http://www.jihui88.com/member/login.html"
               }, 5000)
             } else {
-              alert(result.msg)
+              alert(res.msg)
             }
           }
         }
