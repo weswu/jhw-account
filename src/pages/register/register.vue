@@ -274,7 +274,11 @@ export default {
       if (this.model.username.length < 4) { return alert('账号长度不小于4位') }
       if (this.model.randCode === '') { return alert('手机验证码为空') }
       if (this.model.password.length < 6) { return alert('密码长度不小于6位') }
+      var eTar = e.currentTarget
       $(e.currentTarget).html('注册中...')
+      setTimeout(function() {
+        $(eTar).html('注册')
+      }, 5000)
       $.ajax({
         type: 'post',
         url: '/rest/api/user/register',
