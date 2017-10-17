@@ -116,6 +116,7 @@ export default {
             window.location.href = ctx.redirectUrl || "http://www.jihui88.com/member/index.html"
           } else{
             alert(res.msg)
+            ctx.refreshCode()
           }
           $(e.currentTarget).html('登录')
         }
