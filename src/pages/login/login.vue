@@ -90,7 +90,7 @@ export default {
     this.openid = this.getUrlParam('openid') || ''
     this.type = this.getUrlParam('type') || ''
     this.oauthtype = this.getUrlParam('oauthtype') || ''
-    this.redirectUrl = this.getUrlParam('redirectUrl') || ''
+    this.redirectUrl = this.getUrlParam('redirectURL') || ''
   },
   methods: {
     refreshCode () {
@@ -104,7 +104,11 @@ export default {
       if (this.model.randCode === '') { return alert('请输入验证码') }
       if (this.model.username === '') { return alert('请输入账号') }
       if (this.checked) {this.model.type = '1'} else {this.model.type = '0', this.subusername = ''}
+      var eTar = e.currentTarget
       $(e.currentTarget).html('登录中...')
+      setTimeout(function() {
+        $(eTar).html('登录')
+      }, 5000)
       $.ajax({
         url: '/rest/api/user/login',
         type: 'post',
