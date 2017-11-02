@@ -367,11 +367,14 @@ body {
 	position:relative;
 	z-index: 1;
 	color:#7f7f7f;
-	font-size:14px;
+	font-size:16px;
 	line-height:53px;
 	text-align:center;
 }
 #head .title .title_mid span {
+  font-size:18px;
+}
+#head .title .title_mid .primary {
 	color:#ff6700;
 }
 #head .title .title_right {

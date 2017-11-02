@@ -4,7 +4,7 @@
     <div id="head">
       <div class="title">
         <img src="static/images/logo2.jpg" alt="机汇网" />
-        <div class="title_mid">我们已累计为 <span>{{count}}</span>个企业 提供服务</div>
+        <div class="title_mid">我们已累计为 <span><span class="primary">{{count}}</span>个企业</span> 提供服务</div>
         <div class="title_right">已有账号，<a href="login.html">马上登录 <span>></span></a></div>
       </div>
       <div class="content">
@@ -317,7 +317,7 @@ export default {
           ctx.count = 50000
           window.clearInterval(ctx.t1)
         }
-      }, 100)
+      }, 50)
       $.ajax({
         type: 'get',
         url: '/rest/api/user/member_count',
@@ -331,7 +331,7 @@ export default {
                 ctx.count = res.attributes.data
                 window.clearInterval(ctx.t2)
               }
-            }, 50)
+            }, 30)
           }
         }
       })
