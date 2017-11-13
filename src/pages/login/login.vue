@@ -117,7 +117,7 @@ export default {
         },
         success: function(res) {
           if (res.success) {
-            window.location.href = ctx.model.redirectURL || "http://www.jihui88.com/member/index.html"
+            window.location.href = ctx.model.redirectURL? (ctx.model.redirectURL+(ctx.model.redirectURL.indexOf('?') > -1? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : "http://www.jihui88.com/member/index.html"
           } else{
             alert(res.msg)
             ctx.refreshCode()
