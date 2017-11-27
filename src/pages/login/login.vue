@@ -39,10 +39,9 @@
       <div class="foot1">
         <a href="javascript:;" class="f_mobile"><span class="iconfontyyy2">&#xe61d;</span>移动版<em>扫一扫，安装后台APP<img src="static/images/app_ewm.jpg" border="0" /></em></a>
         <a href="/">首页</a><a href="http://www.ykzbrcw.com/company/company-show.php?id=6" target="_blank">诚征英才</a>
-        <a href="http://www.ykit.net/" target="_blank">联系我们</a>
-        <a href="http://www.jihui88.com/join.html">欢迎合作</a>
-        <a href="http://xueyuan.jihui88.com/news-344137-1.html">商业资讯</a>
-        <a href="http://ykwlyx.jihui88.com/" target="_blank">网络营销学院</a>
+        <a href="http://about.jihui88.com/" target="_blank">联系我们</a>
+        <a href="http://www.jihui88.com/join.html">欢迎加盟</a>
+        <a href="http://xueyuan.jihui88.com/news.html" target="_blank">网络营销学院</a>
       </div>
       <div class="foot2">
         <div class="foot2_1">
