@@ -90,7 +90,7 @@ export default {
     this.type = this.getUrlParam('type') || ''
     this.oauthtype = this.getUrlParam('oauthtype') || ''
     this.model.redirectURL = this.getUrlParam('redirectURL') || ''
-    this.model.redirectUrl = this.getUrlParam('redirectUrl') + (location.hash ? location.hash : '') || ''
+    this.model.redirectUrl = this.getUrlParam('redirectUrl') ? (this.getUrlParam('redirectUrl') + (location.hash ? location.hash : '')) : null
   },
   methods: {
     // 向父iframe 传 data
