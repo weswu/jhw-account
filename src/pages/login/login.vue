@@ -93,13 +93,6 @@ export default {
     this.model.redirectUrl = this.getUrlParam('redirectUrl') ? (this.getUrlParam('redirectUrl') + (location.hash ? location.hash : '')) : null
   },
   methods: {
-    // 向父iframe 传 data
-    sendMessage () {
-      var dataJson = {　　　　
-        type: 1
-      }
-      window.parent.postMessage(dataJson, '*')
-    },
     refreshCode () {
       this.verifyPic = '?time=' + new Date().getTime()
     },
@@ -124,7 +117,6 @@ export default {
         },
         success: function(res) {
           if (res.success) {
-            ctx.sendMessage()
             window.location.href =ctx.model.redirectUrl? ctx.model.redirectUrl : ctx.model.redirectURL? (ctx.model.redirectURL+(ctx.model.redirectURL.indexOf('?') > -1? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : "http://www.jihui88.com/member/index.html"
           } else{
             alert(res.msg)
@@ -153,7 +145,6 @@ export default {
           if (res.success) {
             window.location.href = 'https://graph.qq.com/oauth/show?which=ConfirmPage&display=pc&client_id=101370473&response_type=code&state=' + res.attributes.data + '_' + ctx.model.type + '_qq' + "&scope=&display=&redirect_uri=" +
               encodeURIComponent("http://www.jihui88.com/rest/api/user/oauth")
-            ctx.sendMessage()
           }
         }
       })
