@@ -18,7 +18,7 @@
               <img :src="'http://www.jihui88.com/veriImg'+verifyPic"  @click="refreshCode"/><a class="refreshCode" @click="refreshCode" href="javascript:;">换一张？</a></li>
             <li class="item04"><input type="checkbox" v-model="checked"><label @click="check">使用员工账号登录</label><a href="forget_password.html" class="fr">忘记密码</a></li>
             <li class="item05"><button id="submit" type="button" class="submit" @click="submit">登录</button></li>
-            <li class="item06"><a href="register.html" class="fr" v-if="!hideRegisterBtn">免费注册</a></li>
+            <li class="item06"><a href="register.html" class="fr">免费注册</a></li>
             <li class="item07">第三方账号登录</li>
             <li class="item08">
               <a @click="qqLogin"href="javascript:;" class="iconfontyyy2 icon_qq">&#xe65b;</a>
@@ -79,8 +79,7 @@ export default {
       // 用户绑定页面数据
       openid: '',
       type: '',
-      oauthtype: '',
-      hideRegisterBtn: false
+      oauthtype: ''
     }
   },
   components: {
@@ -92,9 +91,6 @@ export default {
     this.oauthtype = this.getUrlParam('oauthtype') || ''
     this.model.redirectURL = this.getUrlParam('redirectURL') || ''
     this.model.redirectUrl = this.getUrlParam('redirectUrl') ? (this.getUrlParam('redirectUrl') + (location.hash ? location.hash : '')) : null
-    if (this.model.redirectURL.match(new RegExp('http://buy.jihui88.com'))) {
-      this.hideRegisterBtn = true
-    }
   },
   methods: {
     refreshCode () {
