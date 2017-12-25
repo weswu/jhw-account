@@ -62,6 +62,9 @@ export default {
     oauthtype: {
       type: String,
       default: 'weixin'
+    },
+    redirectUrl: {
+      type: String
     }
   },
   data () {
@@ -80,6 +83,7 @@ export default {
       if (this.password === '') { return alert('密码不能为空') }
       if (this.password.length < 6) { return alert('密码长度不小于6位') }
       if (this.isUser === '00') { this.subusername = null, this.email = '' }
+      var redirectUrl = this.redirectUrl
       $.ajax({
         type: 'post',
         url: '/rest/api/user/oauthBind',
@@ -96,7 +100,7 @@ export default {
         },
         success: function (res) {
           if (res.success) {
-            window.location.href = "http://www.jihui88.com/member/index.html"
+            window.location.href = redirectUrl ? redirectUrl : "http://www.jihui88.com/member/index.html"
           } else {
             if (res.msgType === 'bindUser') {
               // 跳转到用户绑定列表，并带上openid过去
@@ -104,12 +108,12 @@ export default {
             } else if (res.msgType === 'oauth_none') {
               alert(res.msg)
               setTimeout(function() {
-                window.location.href="http://www.jihui88.com/member/login.html"
+                window.location.href=redirectUrl ? redirectUrl : "http://www.jihui88.com/member/login.html"
               }, 1000)
             } else if (res.msg === '账号未验证'){
               alert('绑定成功， 请先登录邮箱进行账号验证，验证通过后即可快捷登录')
               setTimeout(function() {
-                window.location.href="http://www.jihui88.com/member/login.html"
+                window.location.href=redirectUrl ? redirectUrl : "http://www.jihui88.com/member/login.html"
               }, 5000)
             } else {
               alert(res.msg)
@@ -119,7 +123,7 @@ export default {
       })
     },
     close () {
-      window.location.href="http://www.jihui88.com/member/login.html"
+      window.location.href=redirectUrl ? redirectUrl : "http://www.jihui88.com/member/login.html"
     }
   }
 }

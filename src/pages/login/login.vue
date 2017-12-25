@@ -31,7 +31,7 @@
         <a @click="close" href="javascript:;"  class="iconfontyyy2 icon_close">&#xe66d;</a>
         <div id="wxlogin_container"></div>
       </div>
-      <UserBind :openid="openid" :type="type" :oauthtype="oauthtype" v-if="openid !== ''"></UserBind>
+      <UserBind :openid="openid" :type="type" :oauthtype="oauthtype" :redirectUrl="model.redirectUrl" v-if="openid !== ''"></UserBind>
     </div>
   </div>
   <div id="footer">
@@ -143,7 +143,8 @@ export default {
       $.ajax({
         url: '/rest/api/user/oauth',
         data: {
-          requestType: 'state'
+          requestType: 'state',
+          redirectUrl: ctx.model.redirectUrl
         },
         success: function(res) {
           if (res.success) {
@@ -161,7 +162,8 @@ export default {
       $.ajax({
         url: '/rest/api/user/oauth',
         data: {
-          requestType: 'state'
+          requestType: 'state',
+          redirectUrl: ctx.model.redirectUrl
         },
         success: function(res) {
           if (res.success) {
