@@ -110,7 +110,7 @@ export default {
               setTimeout(function() {
                 window.location.href=redirectUrl ? redirectUrl : "http://www.jihui88.com/member/login.html"
               }, 1000)
-            } else if (res.msg === '账号未验证'){
+            } else if (res.msgType === 'bind_user_init'){
               alert('绑定成功， 请先登录邮箱进行账号验证，验证通过后即可快捷登录')
               setTimeout(function() {
                 window.location.href=redirectUrl ? redirectUrl : "http://www.jihui88.com/member/login.html"
