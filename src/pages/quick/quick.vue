@@ -74,6 +74,7 @@ export default {
     this.openid = this.getUrlParam('openid') || ''
     this.type = this.getUrlParam('type') || ''
     this.oauthtype = this.getUrlParam('oauthtype') || ''
+    // 大写系统，小写自定义
     this.model.redirectURL = this.getUrlParam('redirectURL') || ''
     this.model.redirectUrl = this.getUrlParam('redirectUrl') ? (this.getUrlParam('redirectUrl') + (location.hash ? location.hash : '')) : null
   },
@@ -125,6 +126,7 @@ export default {
     },
     // 获取验证验
     getCode (e) {
+      var ctx = this
       let test = /^1[3|4|5|7|8][0-9]\d{4,8}$/
       if (!test.test(this.phone)) { return alert('不是有效的手机号码！') }
       if (this.model.randCode === '') { return alert('请输入图片验证码') }
@@ -143,12 +145,14 @@ export default {
           } else {
             ctx.countdown = 0
             alert(res.msg)
+            ctx.refreshCode()
           }
         }
       });
     },
     // 登录
     mobileSubmit () {
+      var ctx = this
       if (this.phone === '' || this.mobileCode === '') {
         return alert('请填写手机号码和验证码')
       }
@@ -164,6 +168,7 @@ export default {
             window.location.href =ctx.model.redirectUrl? ctx.model.redirectUrl : ctx.model.redirectURL? (ctx.model.redirectURL+(ctx.model.redirectURL.indexOf('?') > -1? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : "http://www.jihui88.com/member/index.html"
           } else{
             alert(res.msg)
+            ctx.refreshCode()
           }
         }
       })
