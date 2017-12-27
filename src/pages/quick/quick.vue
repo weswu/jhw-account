@@ -273,7 +273,7 @@ export default {
 }
 * {margin:0;padding:0;text-decoration:none;list-style:none;font-family:"Microsoft Yahei","PingHei","Lucida Grande","Lucida Sans Unicode";}
 body{margin:0}
-#login{max-width:650px;margin:0 auto;border:1px solid #ddd;position:relative}
+#login{max-width:650px;margin:0 auto;border:1px solid #ddd;position:relative;background: #fff;}
 .header{text-align:center;margin:0 auto;margin-top:25px}
 .tagline{font-size:14px;font-weight:400;color:#999;text-align:center;padding:10px}
 .wrapper{padding:32px;height:179px}
