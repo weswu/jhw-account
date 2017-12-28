@@ -162,6 +162,7 @@ export default {
         data: {
           state: this.state,    // 第一步里获取到的state参数(必填)
           code: this.mobileCode,    // 手机验证码(必填)
+          redirectURL: this.model.redirectURL,
           backURL: this.backURL  // 登录成功后的跳转地址
         },
         success: function(res) {
@@ -203,6 +204,7 @@ export default {
         url: '/rest/api/user/oauth',
         data: {
           requestType: 'state',
+          redirectURL: ctx.model.redirectURL,
           backURL: ctx.backURL
         },
         success: function(res) {
@@ -221,6 +223,7 @@ export default {
         url: '/rest/api/user/oauth',
         data: {
           requestType: 'state',
+          redirectURL: ctx.model.redirectURL,
           backURL: ctx.backURL
         },
         success: function(res) {
@@ -240,7 +243,7 @@ export default {
     },
     // 注册
     singup () {
-      window.open('http://www.jihui88.com/member/register.html?redirectUrl=' + this.backURL)
+      window.open('http://www.jihui88.com/member/register.html?backURL=' + this.backURL)
     },
     refreshCode () {
       this.verifyPic = '?time=' + new Date().getTime()

@@ -31,7 +31,7 @@
         <a @click="close" href="javascript:;"  class="iconfontyyy2 icon_close">&#xe66d;</a>
         <div id="wxlogin_container"></div>
       </div>
-      <UserBind :openid="openid" :type="type" :oauthtype="oauthtype" :redirectUrl="model.redirectUrl" v-if="openid !== ''"></UserBind>
+      <UserBind :openid="openid" :type="type" :oauthtype="oauthtype" :backURL="backURL" v-if="openid !== ''"></UserBind>
     </div>
   </div>
   <div id="footer">
@@ -89,8 +89,10 @@ export default {
     this.openid = this.getUrlParam('openid') || ''
     this.type = this.getUrlParam('type') || ''
     this.oauthtype = this.getUrlParam('oauthtype') || ''
+    // 后端控制的重定向（用于授权登录），前端无需关注
     this.model.redirectURL = this.getUrlParam('redirectURL') || ''
-    this.model.redirectUrl = this.getUrlParam('redirectUrl') ? (this.getUrlParam('redirectUrl') + (location.hash ? location.hash : '')) : null
+    // 前端控制的返回页面
+    this.backURL = this.getUrlParam('backURL') ? (this.getUrlParam('backURL') + (location.hash ? location.hash : '')) : null
   },
   methods: {
     refreshCode () {
@@ -117,7 +119,8 @@ export default {
         },
         success: function(res) {
           if (res.success) {
-            window.location.href =ctx.model.redirectUrl? ctx.model.redirectUrl : ctx.model.redirectURL? (ctx.model.redirectURL+(ctx.model.redirectURL.indexOf('?') > -1? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : "http://www.jihui88.com/member/index.html"
+            // 判断是否存在backURL? [说明是普通跳转] : [是否存在redirectUrl? 是[[说明是授权登录，需要跳转到redirectURL地址，并带上code与state参数]] : 否 [[跳转到用户后台首页]] ]
+            window.location.href =ctx.backURL? ctx.backURL : ctx.model.redirectURL? (ctx.model.redirectURL+(ctx.model.redirectURL.indexOf('?') > -1? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : "http://www.jihui88.com/member/index.html"
           } else{
             alert(res.msg)
             ctx.refreshCode()
@@ -140,7 +143,8 @@ export default {
         url: '/rest/api/user/oauth',
         data: {
           requestType: 'state',
-          redirectUrl: ctx.model.redirectUrl
+          redirectURL: ctx.model.redirectURL,
+          backURL: ctx.backURL
         },
         success: function(res) {
           if (res.success) {
@@ -159,7 +163,8 @@ export default {
         url: '/rest/api/user/oauth',
         data: {
           requestType: 'state',
-          redirectUrl: ctx.model.redirectUrl
+          redirectURL: ctx.model.redirectURL,
+          backURL: ctx.backURL
         },
         success: function(res) {
           if (res.success) {
