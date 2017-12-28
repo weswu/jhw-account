@@ -74,9 +74,10 @@ export default {
     this.openid = this.getUrlParam('openid') || ''
     this.type = this.getUrlParam('type') || ''
     this.oauthtype = this.getUrlParam('oauthtype') || ''
-    // 大写系统，小写自定义
+    // 系统跳转
     this.model.redirectURL = this.getUrlParam('redirectURL') || ''
-    this.model.redirectUrl = this.getUrlParam('redirectUrl') ? (this.getUrlParam('redirectUrl') + (location.hash ? location.hash : '')) : null
+    // 自定义返回地址
+    this.backURL = this.getUrlParam('backURL') ? (this.getUrlParam('backURL') + (location.hash ? location.hash : '')) : null
   },
   methods: {
     submit (e) {
@@ -99,7 +100,7 @@ export default {
         },
         success: function(res) {
           if (res.success) {
-            window.location.href =ctx.model.redirectUrl? ctx.model.redirectUrl : ctx.model.redirectURL? (ctx.model.redirectURL+(ctx.model.redirectURL.indexOf('?') > -1? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : "http://www.jihui88.com/member/index.html"
+            window.location.href = ctx.backURL ? ctx.backURL : ctx.model.redirectURL ? (ctx.model.redirectURL + (ctx.model.redirectURL.indexOf('?') > -1 ? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : 'http://www.jihui88.com/member/index.html'
           } else{
             alert(res.msg)
             ctx.refreshCode()
@@ -108,14 +109,14 @@ export default {
         }
       })
     },
-    // 手机登录
+    // 切换到手机，获取state
     mobile () {
       var ctx = this
       $.ajax({
         url: '/rest/api/user/oauth',
         data: {
           requestType: 'state', // 请求state(必填)
-          redirectUrl: this.model.redirectURL   // 登录成功后的跳转地址
+          backURL: this.backURL   // 登录成功后的跳转地址
         },
         success: function(res) {
           if (res.success) {
@@ -150,7 +151,7 @@ export default {
         }
       });
     },
-    // 登录
+    // 手机登录
     mobileSubmit () {
       var ctx = this
       if (this.phone === '' || this.mobileCode === '') {
@@ -161,11 +162,11 @@ export default {
         data: {
           state: this.state,    // 第一步里获取到的state参数(必填)
           code: this.mobileCode,    // 手机验证码(必填)
-          redirectUrl: this.model.redirectURL  // 登录成功后的跳转地址
+          backURL: this.backURL  // 登录成功后的跳转地址
         },
         success: function(res) {
           if (res.success) {
-            window.location.href =ctx.model.redirectUrl? ctx.model.redirectUrl : ctx.model.redirectURL? (ctx.model.redirectURL+(ctx.model.redirectURL.indexOf('?') > -1? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : "http://www.jihui88.com/member/index.html"
+            window.location.href = ctx.backURL ? ctx.backURL : ctx.model.redirectURL ? (ctx.model.redirectURL + (ctx.model.redirectURL.indexOf('?') > -1 ? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : 'http://www.jihui88.com/member/index.html'
           } else{
             alert(res.msg)
             ctx.refreshCode()
@@ -202,7 +203,7 @@ export default {
         url: '/rest/api/user/oauth',
         data: {
           requestType: 'state',
-          redirectUrl: ctx.model.redirectUrl
+          backURL: ctx.backURL
         },
         success: function(res) {
           if (res.success) {
@@ -220,7 +221,7 @@ export default {
         url: '/rest/api/user/oauth',
         data: {
           requestType: 'state',
-          redirectUrl: ctx.model.redirectUrl
+          backURL: ctx.backURL
         },
         success: function(res) {
           if (res.success) {
@@ -239,7 +240,7 @@ export default {
     },
     // 注册
     singup () {
-      window.open('http://www.jihui88.com/member/register.html?redirectUrl= + this.model.redirectURL')
+      window.open('http://www.jihui88.com/member/register.html?redirectUrl=' + this.backURL)
     },
     refreshCode () {
       this.verifyPic = '?time=' + new Date().getTime()
