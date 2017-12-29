@@ -123,7 +123,9 @@ export default {
         url: '/rest/api/user/oauth',
         data: {
           requestType: 'state', // 请求state(必填)
-          backURL: this.backURL   // 登录成功后的跳转地址
+          redirectURL: ctx.model.redirectURL,
+          scope: ctx.scope,
+          backURL: ctx.backURL   // 登录成功后的跳转地址
         },
         success: function(res) {
           if (res.success) {
@@ -175,6 +177,10 @@ export default {
         },
         success: function(res) {
           if (res.success) {
+            if (res.attributes && res.attributes.data){
+              window.location.href=res.attributes.data
+              return
+            }
             window.location.href = ctx.backURL ? ctx.backURL : ctx.model.redirectURL ? (ctx.model.redirectURL + (ctx.model.redirectURL.indexOf('?') > -1 ? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : 'http://www.jihui88.com/member/index.html'
           } else{
             alert(res.msg)
