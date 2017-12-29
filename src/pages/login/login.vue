@@ -31,7 +31,7 @@
         <a @click="close" href="javascript:;"  class="iconfontyyy2 icon_close">&#xe66d;</a>
         <div id="wxlogin_container"></div>
       </div>
-      <UserBind :openid="openid" :type="type" :oauthtype="oauthtype" :backURL="backURL" v-if="openid !== ''"></UserBind>
+      <UserBind :openid="openid" :type="type" :oauthtype="oauthtype"  :redirectURL="model.redirectURL"  :backURL="backURL" v-if="openid !== ''"></UserBind>
     </div>
   </div>
   <div id="footer">
@@ -93,6 +93,7 @@ export default {
     this.model.redirectURL = this.getUrlParam('redirectURL') || ''
     // 前端控制的返回页面
     this.backURL = this.getUrlParam('backURL') ? (this.getUrlParam('backURL') + (location.hash ? location.hash : '')) : null
+    this.scope = this.getUrlParam('scope') ? this.getUrlParam('scope') : null
   },
   methods: {
     refreshCode () {
@@ -144,6 +145,7 @@ export default {
         data: {
           requestType: 'state',
           redirectURL: ctx.model.redirectURL,
+          scope: ctx.scope,
           backURL: ctx.backURL
         },
         success: function(res) {
@@ -164,6 +166,7 @@ export default {
         data: {
           requestType: 'state',
           redirectURL: ctx.model.redirectURL,
+          scope: ctx.scope,
           backURL: ctx.backURL
         },
         success: function(res) {

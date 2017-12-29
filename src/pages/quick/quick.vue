@@ -33,6 +33,7 @@
         </div>
       </div>
     </div>
+    <UserBind :openid="openid" :type="type" :oauthtype="oauthtype" :redirectURL="model.redirectURL" :backURL="backURL" v-if="openid !== ''"></UserBind>
     <!-- weixin -->
     <div class="oAuth__content" v-if="wxShow">
       <a @click="wxShow=!wxShow" href="javascript:;"  class="iconfontyyy2 icon_close">&#xe66d;</a>
@@ -46,6 +47,7 @@
 </template>
 
 <script>
+import UserBind from '../login/userBind.vue'
 export default {
   data　() {
     return {
@@ -70,6 +72,9 @@ export default {
       phone: ''
     }
   },
+   components: {
+    UserBind
+  },
   created () {
     this.openid = this.getUrlParam('openid') || ''
     this.type = this.getUrlParam('type') || ''
@@ -78,6 +83,8 @@ export default {
     this.model.redirectURL = this.getUrlParam('redirectURL') || ''
     // 自定义返回地址
     this.backURL = this.getUrlParam('backURL') ? (this.getUrlParam('backURL') + (location.hash ? location.hash : '')) : null
+
+    this.scope = this.getUrlParam('scope') ? this.getUrlParam('scope') : null
   },
   methods: {
     submit (e) {
@@ -163,6 +170,7 @@ export default {
           state: this.state,    // 第一步里获取到的state参数(必填)
           code: this.mobileCode,    // 手机验证码(必填)
           redirectURL: this.model.redirectURL,
+          scope: ctx.scope,
           backURL: this.backURL  // 登录成功后的跳转地址
         },
         success: function(res) {
@@ -205,6 +213,7 @@ export default {
         data: {
           requestType: 'state',
           redirectURL: ctx.model.redirectURL,
+          scope: ctx.scope,
           backURL: ctx.backURL
         },
         success: function(res) {
@@ -224,6 +233,7 @@ export default {
         data: {
           requestType: 'state',
           redirectURL: ctx.model.redirectURL,
+          scope: ctx.scope,
           backURL: ctx.backURL
         },
         success: function(res) {
