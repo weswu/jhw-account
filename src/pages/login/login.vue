@@ -94,6 +94,7 @@ export default {
     // 前端控制的返回页面
     this.backURL = this.getUrlParam('backURL') ? (this.getUrlParam('backURL') + (location.hash ? location.hash : '')) : null
     this.scope = this.getUrlParam('scope') ? this.getUrlParam('scope') : null
+    this.appId = this.getUrlParam('appId')
   },
   methods: {
     refreshCode () {
@@ -146,6 +147,7 @@ export default {
           requestType: 'state',
           redirectURL: ctx.model.redirectURL,
           scope: ctx.scope,
+          appId: ctx.appId,
           backURL: ctx.backURL
         },
         success: function(res) {
@@ -167,6 +169,7 @@ export default {
           requestType: 'state',
           redirectURL: ctx.model.redirectURL,
           scope: ctx.scope,
+          appId: ctx.appId,
           backURL: ctx.backURL
         },
         success: function(res) {

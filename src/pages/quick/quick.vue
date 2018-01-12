@@ -85,6 +85,8 @@ export default {
     this.backURL = this.getUrlParam('backURL') ? (this.getUrlParam('backURL') + (location.hash ? location.hash : '')) : null
 
     this.scope = this.getUrlParam('scope') ? this.getUrlParam('scope') : null
+
+    this.appId = this.getUrlParam('appId')
   },
   methods: {
     submit (e) {
@@ -173,6 +175,7 @@ export default {
           code: this.mobileCode,    // 手机验证码(必填)
           redirectURL: this.model.redirectURL,
           scope: ctx.scope,
+          appId: ctx.appId,
           backURL: this.backURL  // 登录成功后的跳转地址
         },
         success: function(res) {
@@ -220,6 +223,7 @@ export default {
           requestType: 'state',
           redirectURL: ctx.model.redirectURL,
           scope: ctx.scope,
+          appId: ctx.appId,
           backURL: ctx.backURL
         },
         success: function(res) {
@@ -240,6 +244,7 @@ export default {
           requestType: 'state',
           redirectURL: ctx.model.redirectURL,
           scope: ctx.scope,
+          appId: ctx.appId,
           backURL: ctx.backURL
         },
         success: function(res) {

@@ -5,7 +5,7 @@
       <div class="wes-modal">
         <div class="modal-content">
           <a href="javascript:;" class="modal-close iconfontyyy2" @click="close">&#xe66d;</a>
-          <div class="modal-header"><div class="ivu-modal-header-inner">用户绑定</div></div>
+          <div class="modal-header"><div class="ivu-modal-header-inner">新老用户绑定</div></div>
           <div class="modal-body">
             <div class="text-col" v-if="type === '0'">
               <span class="text-left">类型:</span>
@@ -32,12 +32,7 @@
                 <input name="password" type="password" v-model="password"/>
               </div>
             </div>
-            <div class="text-col" v-if="isUser === '00'">
-              <span class="text-left">邮箱:</span>
-              <div class="text-content">
-                <input name="email" type="text" v-model="email"/>
-              </div>
-            </div>
+
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-text" @click="close"><span>取消</span></button>
@@ -89,6 +84,7 @@ export default {
         // 系统跳转
       this.redirectURL = this.getUrlParam('redirectURL')
       var backURL = this.backURL === 'null' ? null : this.backURL
+      this.appId = this.getUrlParam('appId')
 
       $.ajax({
         type: 'post',
@@ -101,6 +97,7 @@ export default {
             subusername: ctx.subusername, // 如果是员工账号，则此荐必填
             password: ctx.password, // 必填
             email: ctx.email,
+            appId: ctx.appId,
             redirectURL : ctx.redirectURL,
             type: ctx.type // 账号类型 {'0': '企业账号', '1': '员工账号', '2': '企业会员账号'}
           })
