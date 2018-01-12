@@ -40,7 +40,7 @@
       <div id="wxlogin_container"></div>
     </div>
     <div class="footer">
-      没有帐号？<a href="javascript:;" class="singup-btn" @click="singup">开始免费注册 ！</a>
+      <a href="javascript:;" class="footer-btn" @click="forget">忘记密码</a> <a href="javascript:;" class="footer-btn" @click="singup">免费注册</a>     © 机汇网 2018
     </div>
   </div>
 
@@ -261,6 +261,10 @@ export default {
     singup () {
       window.open('http://www.jihui88.com/member/register.html?backURL=' + this.backURL)
     },
+    // 忘记密码
+    forget () {
+      window.open('http://www.jihui88.com/member/forget_password.html')
+    },
     refreshCode () {
       this.verifyPic = '?time=' + new Date().getTime()
     },
@@ -298,7 +302,7 @@ export default {
 }
 * {margin:0;padding:0;text-decoration:none;list-style:none;font-family:"Microsoft Yahei","PingHei","Lucida Grande","Lucida Sans Unicode";}
 body{margin:0}
-#login{max-width:650px;margin:0 auto;border:1px solid #ddd;position:relative;background: #fff;}
+#login{width:650px;box-sizing: border-box;margin:0 auto;border:1px solid #ddd;position:relative;background: #fff;}
 .header{text-align:center;margin:0 auto;margin-top:25px}
 .tagline{font-size:14px;font-weight:400;color:#999;text-align:center;padding:10px}
 .wrapper{padding:32px;height:179px}
@@ -308,7 +312,8 @@ body{margin:0}
 .quick_login .login{position:relative;padding-left:32px}
 /* footer */
 .footer{padding:12px;font-size:12px;color:#999;text-align:center;border-top:1px solid #e2e2e2;background:#f7f7f7}
-.singup-btn{color:#37b;text-decoration:none}
+.footer-btn{color: #999;margin-right: 10px;}
+.footer-btn:hover{text-decoration: underline;}
 /* 快捷登录 */
 .submit_button{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;transition:opacity ease-in-out .1s,color ease-in-out .1s,background-color ease-in-out .1s,border-color ease-in-out .1s;border-radius:3px;box-shadow:0 1px 1px 0 rgba(200,200,200,.2);display:inline-block;font-weight:500;outline:0;padding:3px 7px 4px 7px;text-align:center;text-decoration:none;cursor:pointer;margin-bottom:20px;font-size:16px;padding:8px 16px;width:270px;color:#fff}
 .qq_button{background-color:#28B7F7}
@@ -317,7 +322,7 @@ body{margin:0}
 .weixin_button:after{width:24px;height:24px;background-size:24px 24px;background-image:url(http://www.jihui88.com/member/static/images/weixin.png);float:left;content:"";display:inline-block}
 .header_login_text_box{width:100%;font-size:15px;line-height:1.4;padding:3px 5px;height:15px;padding-left:8px;padding-right:8px;min-height:32px;margin-bottom:15px;background-color:#EEE}
 /* 微信二维码 */
-.oAuth__content{position:absolute;top:0;width:100%;background:#fff;text-align:center;min-height:404px}
+.oAuth__content{position:absolute;top:0;width:100%;background:#fff;text-align:center;height: 100%;}
 .icon_close{font-size:32px;color:#ddd;transition:all .3s ease 0s;-moz-transition:all .3s ease 0s;-webkit-transition:all .3s ease 0s;-o-transition:all .3s ease 0s;position:absolute;right:10px}
 .icon_close:hover{color:#aaa}
 /* 验证码 */
