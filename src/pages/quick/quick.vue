@@ -307,7 +307,7 @@ export default {
 }
 * {margin:0;padding:0;text-decoration:none;list-style:none;font-family:"Microsoft Yahei","PingHei","Lucida Grande","Lucida Sans Unicode";}
 body{margin:0}
-#login{width:650px;box-sizing: border-box;margin:0 auto;border:1px solid #ddd;position:relative;background: #fff;}
+#login{width:650px;box-sizing: border-box;margin:0 auto;border:1px solid #ccc;position:relative;background: #fff;}
 .header{text-align:center;margin:0 auto;margin-top:25px}
 .tagline{font-size:14px;font-weight:400;color:#999;text-align:center;padding:10px}
 .wrapper{padding:32px;height:179px}
@@ -321,9 +321,9 @@ body{margin:0}
 .footer-btn:hover{text-decoration: underline;}
 /* 快捷登录 */
 .submit_button{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;transition:opacity ease-in-out .1s,color ease-in-out .1s,background-color ease-in-out .1s,border-color ease-in-out .1s;border-radius:3px;box-shadow:0 1px 1px 0 rgba(200,200,200,.2);display:inline-block;font-weight:500;outline:0;padding:3px 7px 4px 7px;text-align:center;text-decoration:none;cursor:pointer;margin-bottom:20px;font-size:16px;padding:8px 16px;width:270px;color:#fff}
-.qq_button{background-color:#28B7F7}
+.qq_button{background-color:#28B7F7;line-height: 40px;height: 40px;}
 .qq_button:after{width:24px;height:24px;background-size:24px 24px;background-image:url(http://www.jihui88.com/member/static/images/QQ.png);position: absolute;left: 20px;content:"";display:inline-block}
-.weixin_button{background-color:#05D02F}
+.weixin_button{background-color:#05D02F;line-height: 40px;height: 40px;}
 .weixin_button:after{width:24px;height:24px;background-size:24px 24px;background-image:url(http://www.jihui88.com/member/static/images/weixin.png);position: absolute;left: 20px;content:"";display:inline-block}
 .header_login_text_box{width:100%;font-size:15px;line-height:1.4;padding:3px 5px;height:15px;padding-left:8px;padding-right:8px;min-height:32px;margin-bottom:15px;background-color:#EEE}
 /* 微信二维码 */
