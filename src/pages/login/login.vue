@@ -79,7 +79,8 @@ export default {
       // 用户绑定页面数据
       openid: '',
       type: '',
-      oauthtype: ''
+      oauthtype: '',
+      backURL: ''
     }
   },
   components: {

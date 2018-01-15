@@ -127,7 +127,7 @@ export default {
       })
     },
     close () {
-      window.location.href=backURL ? backURL : "http://www.jihui88.com/member/login.html"
+      window.location.href= this.backURL ? this.backURL : "http://www.jihui88.com/member/login.html"
     },
      getUrlParam (name) {
       let url = location.search //获取url中"?"符后的字串

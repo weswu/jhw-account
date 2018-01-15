@@ -69,7 +69,8 @@ export default {
       mobileShow: false,
       state: '',
       mobileCode: '',
-      phone: ''
+      phone: '',
+      backURL: ''
     }
   },
    components: {
