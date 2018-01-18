@@ -336,9 +336,9 @@ body{margin:0}
 .imgCode{width:50%}
 /* 输入框/按钮 */
 input{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;min-height:27px;background:#fff;outline:0;border:1px solid #e2e2e2;border-radius:3px;box-shadow:inset 0 1px 1px rgba(200,200,200,.3);-webkit-transition:border-color .2s;transition:border-color .2s;-webkit-transition:border-color .2s 180ms ease-in-out 0s;-o-transition:border-color .2s 180ms ease-in-out 0s;transition:border-color .2s 180ms ease-in-out 0s}
-.submit{height: 38px;}
+.submit{height: 36px;}
 .submit span{font-size:12px;color:#666;line-height:1.1;cursor:pointer;padding-top:10px;display:inline-block}
-.primary_button{float:right;font-size:15px;line-height:1.1;background:#ff6700;border:1px solid #ff7111;width:100px;margin-bottom:0;margin-right: 3px;}
+.primary_button{float:right;font-size:15px;line-height:1.1;background:#ff6700;border:1px solid #ff7111;width:100px;margin-bottom:0;margin-right: 2px;}
 .submit_button_disabled{opacity:.5;pointer-events:none}
-.primary_button:hover {background: #ff812c;border: 1px solid #ff812c;box-shadow: 0 0 12px 0 rgba(255,103,0,0.75);}
+.primary_button:hover {background: #ff812c;border: 1px solid #ff812c;box-shadow: 0 0 2px 0 rgba(255,103,0,0.75);}
 </style>
