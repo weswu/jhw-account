@@ -4,7 +4,6 @@
     <div class="modal-wrap">
       <div class="wes-modal">
         <div class="modal-content">
-          <a href="javascript:;" class="modal-close iconfontyyy2" @click="close">&#xe66d;</a>
           <div class="modal-header"><div class="ivu-modal-header-inner">新老用户绑定</div></div>
           <div class="modal-body">
             <div class="text-col" v-if="type === '0'">
@@ -35,7 +34,6 @@
 
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-text" @click="close"><span>取消</span></button>
             <button type="button" class="btn btn-primary" @click="submitUser"><span>确定</span></button>
           </div>
         </div>
