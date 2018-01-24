@@ -119,24 +119,6 @@ export default {
         }
       })
     },
-    // 切换到手机，获取state
-    mobile () {
-      var ctx = this
-      $.ajax({
-        url: '/rest/api/user/oauth',
-        data: {
-          requestType: 'state', // 请求state(必填)
-          redirectURL: ctx.model.redirectURL,
-          scope: ctx.scope,
-          backURL: ctx.backURL   // 登录成功后的跳转地址
-        },
-        success: function(res) {
-          if (res.success) {
-            ctx.state = res.attributes.data + '_' + '0' + '_cellphone';
-          }
-        }
-      })
-    },
     // 获取验证验
     getCode (e) {
       var ctx = this
@@ -163,6 +145,25 @@ export default {
         }
       });
     },
+    // 切换到手机，获取state
+    mobile () {
+      var ctx = this
+      $.ajax({
+        url: '/rest/api/user/oauth',
+        data: {
+          requestType: 'state', // 请求state(必填)
+          redirectURL: ctx.model.redirectURL,
+          scope: ctx.scope,
+          appId: ctx.appId,
+          backURL: ctx.backURL   // 登录成功后的跳转地址
+        },
+        success: function(res) {
+          if (res.success) {
+            ctx.state = res.attributes.data + '_' + '0' + '_cellphone';
+          }
+        }
+      })
+    },
     // 手机登录
     mobileSubmit () {
       var ctx = this
@@ -176,6 +177,7 @@ export default {
           code: this.mobileCode,    // 手机验证码(必填)
           redirectURL: this.model.redirectURL,
           scope: ctx.scope,
+          quick:'01',
           appId: ctx.appId,
           backURL: this.backURL  // 登录成功后的跳转地址
         },
@@ -224,6 +226,7 @@ export default {
           requestType: 'state',
           redirectURL: ctx.model.redirectURL,
           scope: ctx.scope,
+          quick:'01',
           appId: ctx.appId,
           backURL: ctx.backURL
         },
@@ -245,6 +248,7 @@ export default {
           requestType: 'state',
           redirectURL: ctx.model.redirectURL,
           scope: ctx.scope,
+          quick:'01',
           appId: ctx.appId,
           backURL: ctx.backURL
         },
