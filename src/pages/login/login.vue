@@ -5,21 +5,21 @@
       <img src="static/images/logo.png" alt="机汇网" class="logo" />
       <h1>登入机汇网，建立企业自己的互联网销售平台</h1>
       <div class="login">
-        <div class="title">会员登录</div>
+        <div class="title"><span v-if="addBind==='1'">第三方账号绑定</span><span v-else>会员登录</span></div>
         <div class="content">
           <ul>
-            <li class="item01"><input name="username" v-model="model.username" @keyup.enter="submit" type="text" placeholder="请输入账号/公司账号"></li>
+            <li class="item01" v-if="addBind!=='1'"><input name="username" v-model="model.username" @keyup.enter="submit" type="text" placeholder="请输入账号/公司账号"></li>
             <transition name="fade">
               <li class="item01" v-if="checked"><input name="subusername" v-model="model.subusername" @keyup.enter="submit" type="text" placeholder="请输入员工账号"></li>
             </transition>
-            <li class="item02"><input name="password" v-model="model.password" @keyup.enter="submit" type="password" placeholder="请输入密码"></li>
-            <li class="item03">
+            <li class="item02" v-if="addBind!=='1'"><input name="password" v-model="model.password" @keyup.enter="submit" type="password" placeholder="请输入密码"></li>
+            <li class="item03" v-if="addBind!=='1'">
               <input type="text" id="model-randCode" name="randCode" v-model="model.randCode" @keyup.enter="submit" class="fl yzm" placeholder="请输入验证码">
               <img :src="'http://www.jihui88.com/veriImg'+verifyPic"  @click="refreshCode"/><a class="refreshCode" @click="refreshCode" href="javascript:;">换一张？</a></li>
-            <li class="item04"><input type="checkbox" v-model="checked"><label @click="check">使用员工账号登录</label><a href="forget_password.html" class="fr">忘记密码</a></li>
-            <li class="item05"><button id="submit" type="button" class="submit" @click="submit">登录</button></li>
-            <li class="item06"><a href="register.html" class="fr">免费注册</a></li>
-            <li class="item07">第三方账号登录</li>
+            <li class="item04" v-if="addBind!=='1'"><input type="checkbox" v-model="checked"><label @click="check">使用员工账号登录</label><a href="forget_password.html" class="fr">忘记密码</a></li>
+            <li class="item05" v-if="addBind!=='1'"><button id="submit" type="button" class="submit" @click="submit">登录</button></li>
+            <li class="item06" v-if="addBind!=='1'"><a href="register.html" class="fr">免费注册</a></li>
+            <li class="item07" v-if="addBind!=='1'">第三方账号登录</li>
             <li class="item08">
               <a @click="qqLogin" href="javascript:;" class="iconfontyyy2 icon_qq">&#xe65b;</a>
               <a @click="wxLogin" href="javascript:;" class="iconfontyyy2 icon_weixin">&#xe619;</a>
@@ -28,7 +28,9 @@
         </div>
       </div>
       <div class="oAuth__content" v-if="weixin">
-        <a @click="close" href="javascript:;"  class="iconfontyyy2 icon_close">&#xe66d;</a>
+        <a @click="close" href="javascript:;"v-if="addBind!=='1'" class="iconfontyyy2 icon_close">&#xe66d;</a>
+        <div v-if="addBind==='1'" class="addBind-wx">微信账号绑定</div>
+        <div v-if="addBind==='1'" class="addBind-wx-2">请使用微信扫描二维码绑定账号</div>
         <div id="wxlogin_container"></div>
       </div>
       <UserBind :openid="openid" :type="type" :oauthtype="oauthtype"  :redirectURL="model.redirectURL"  :backURL="backURL" v-if="openid !== ''"></UserBind>
@@ -96,6 +98,19 @@ export default {
     this.backURL = this.getUrlParam('backURL') ? (this.getUrlParam('backURL') + (location.hash ? location.hash : '')) : null
     this.scope = this.getUrlParam('scope') ? this.getUrlParam('scope') : null
     this.appId = this.getUrlParam('appId')
+    // 为某账号绑定第三方
+    this.addBind = this.getUrlParam('addBind')
+    // 绑定类型
+    this.bindType = this.getUrlParam('bindType')
+  },
+  mounted: function () {
+    this.$nextTick(function () {
+      if (this.bindType === 'weixin') {
+        this.wxLogin()
+      } else if (this.bindType === 'qq') {
+        this.qqLogin()
+      }
+    })
   },
   methods: {
     refreshCode () {
@@ -149,6 +164,7 @@ export default {
           redirectURL: ctx.model.redirectURL,
           scope: ctx.scope,
           appId: ctx.appId,
+          addBind: ctx.addBind,
           backURL: ctx.backURL
         },
         success: function(res) {
@@ -171,6 +187,7 @@ export default {
           redirectURL: ctx.model.redirectURL,
           scope: ctx.scope,
           appId: ctx.appId,
+          addBind: ctx.addBind,
           backURL: ctx.backURL
         },
         success: function(res) {
@@ -213,4 +230,6 @@ export default {
 .oAuth__content{position:absolute;top:169px;width:419px;background:#fff;text-align:center;min-height:375px}
 .icon_close{font-size:32px;color:#ddd;transition:all .3s ease 0s;-moz-transition:all .3s ease 0s;-webkit-transition:all .3s ease 0s;-o-transition:all .3s ease 0s;position:absolute;right:10px}
 .icon_close:hover{color:#aaa}
+.addBind-wx{position: absolute; left: 0px; top: 0px; height: 40px; width: 100%; padding-top: 30px; font-size: 20px; z-index: 99999; background-color:#fff;}
+.addBind-wx-2{position: absolute; bottom: 0; left: 0; z-index: 9999; background-color: #fff; width: 100%; height: 50px;}
 </style>

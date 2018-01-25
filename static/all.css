@@ -244,6 +244,8 @@ body {
 #footer {
 	background:#282828;
 	padding:34px 0 23px 0;
+	z-index: -1;
+    position: relative;
 }
 #footer .foot_wrap {
 	width:1200px;
