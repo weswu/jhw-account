@@ -7,19 +7,39 @@
       <div class="login">
         <div class="title"><span v-if="addBind==='1'">第三方账号绑定</span><span v-else>会员登录</span></div>
         <div class="content">
-          <ul>
-            <li class="item01" v-if="addBind!=='1'"><input name="username" v-model="model.username" @keyup.enter="submit" type="text" placeholder="请输入账号/公司账号"></li>
+          <!-- 账号登录 -->
+          <ul v-if="addBind!=='1' && !mobileShow">
+            <li class="item01"><input name="username" v-model="model.username" @keyup.enter="submit" type="text" placeholder="请输入账号/公司账号"></li>
             <transition name="fade">
               <li class="item01" v-if="checked"><input name="subusername" v-model="model.subusername" @keyup.enter="submit" type="text" placeholder="请输入员工账号"></li>
             </transition>
-            <li class="item02" v-if="addBind!=='1'"><input name="password" v-model="model.password" @keyup.enter="submit" type="password" placeholder="请输入密码"></li>
-            <li class="item03" v-if="addBind!=='1'">
+            <li class="item02"><input name="password" v-model="model.password" @keyup.enter="submit" type="password" placeholder="请输入密码"></li>
+          </ul>
+          <!-- 手机登录 -->
+          <ul v-if="addBind!=='1' && mobileShow">
+            <li class="item01"><input name="username" v-model="phone" @keyup.enter="submit" type="text" placeholder="请输入手机号"></li>
+          </ul>
+
+          <ul v-if="addBind!=='1'">
+            <li class="item03">
               <input type="text" id="model-randCode" name="randCode" v-model="model.randCode" @keyup.enter="submit" class="fl yzm" placeholder="请输入验证码">
-              <img :src="'http://www.jihui88.com/veriImg'+verifyPic"  @click="refreshCode"/><a class="refreshCode" @click="refreshCode" href="javascript:;">换一张？</a></li>
-            <li class="item04" v-if="addBind!=='1'"><input type="checkbox" v-model="checked"><label @click="check">使用员工账号登录</label><a href="forget_password.html" class="fr">忘记密码</a></li>
-            <li class="item05" v-if="addBind!=='1'"><button id="submit" type="button" class="submit" @click="submit">登录</button></li>
-            <li class="item06" v-if="addBind!=='1'"><a href="register.html" class="fr">免费注册</a></li>
-            <li class="item07" v-if="addBind!=='1'">第三方账号登录</li>
+              <img :src="'http://www.jihui88.com/veriImg'+verifyPic"  @click="refreshCode"/><a class="refreshCode" @click="refreshCode" href="javascript:;">换一张？</a>
+            </li>
+            <li class="item03" v-if="mobileShow">
+              <input type="text" name="mobileCode" v-model="mobileCode" @keyup.enter="submit" class="fl yzm" placeholder="请输入短信验证码">
+              <input class="mobileCode" @click="getCode" type="button" value="发送验证码">
+            </li>
+            <li class="item04"><input type="checkbox" v-model="checked"><label @click="check">使用员工账号登录</label>
+              <a href="javascript:;" class="fr" v-if="!mobileShow" @click="mobileToggle(true)">手机登录</a>
+              <a href="javascript:;" class="fr" v-if="mobileShow" @click="mobileToggle(false)">账号登录</a>
+              <span class="to">|</span>
+              <a href="forget_password.html" class="fr">忘记密码</a>
+            </li>
+            <li class="item05"><button id="submit" type="button" class="submit" @click="submit">登录</button></li>
+            <li class="item06"><a href="register.html" class="fr">免费注册</a></li>
+            <li class="item07">第三方账号登录</li>
+          </ul>
+          <ul>
             <li class="item08">
               <a @click="qqLogin" href="javascript:;" class="iconfontyyy2 icon_qq">&#xe65b;</a>
               <a @click="wxLogin" href="javascript:;" class="iconfontyyy2 icon_weixin">&#xe619;</a>
@@ -82,6 +102,11 @@ export default {
       openid: '',
       type: '',
       oauthtype: '',
+      // 手机
+      mobileShow: false,
+      state: '',
+      mobileCode: '',
+      phone: '',
       backURL: ''
     }
   },
@@ -120,6 +145,7 @@ export default {
       this.checked = !this.checked
     },
     submit (e) {
+      if (this.mobileShow) {return this.mobileSubmit()}
       var ctx = this
       if (this.model.randCode === '') { return alert('请输入验证码') }
       if (this.model.username === '') { return alert('请输入账号') }
@@ -220,6 +246,104 @@ export default {
           }
         }
       }
+    },
+    // 获取验证验
+    getCode (e) {
+      var ctx = this
+      let test = /^1[3|4|5|7|8][0-9]\d{4,8}$/
+      if (!test.test(this.phone)) { return alert('不是有效的手机号码！') }
+      if (this.model.randCode === '') { return alert('请输入图片验证码') }
+      this.countdown = 60
+      this.setTime(e.currentTarget)
+      $.ajax({
+        type: 'post',
+        url: '/rest/api/user/sendCellphone',
+        data: {
+          cellphone: this.phone,   // 手机号码(必填)
+          state: this.state,    // 第一步里获取到的state参数(必填)
+          randCode: this.model.randCode  // 图像验证码(必填)
+        },
+        success: function(res){
+          if (res.success) {
+          } else {
+            ctx.countdown = 0
+            alert(res.msg)
+            ctx.refreshCode()
+          }
+        }
+      });
+    },
+    // 切换到手机，获取state
+    mobile () {
+      var ctx = this
+      $.ajax({
+        url: '/rest/api/user/oauth',
+        data: {
+          requestType: 'state', // 请求state(必填)
+          redirectURL: ctx.model.redirectURL,
+          scope: ctx.scope,
+          appId: ctx.appId,
+          backURL: ctx.backURL   // 登录成功后的跳转地址
+        },
+        success: function(res) {
+          if (res.success) {
+            ctx.state = res.attributes.data + '_' + '0' + '_cellphone';
+          }
+        }
+      })
+    },
+    // 手机登录
+    mobileSubmit () {
+      var ctx = this
+      if (this.phone === '' || this.mobileCode === '') {
+        return alert('请填写手机号码和验证码')
+      }
+      $.ajax({
+        url: '/rest/api/user/oauth',
+        data: {
+          state: this.state,    // 第一步里获取到的state参数(必填)
+          code: this.mobileCode,    // 手机验证码(必填)
+          redirectURL: this.model.redirectURL,
+          scope: ctx.scope,
+          quick:'01',
+          appId: ctx.appId,
+          backURL: this.backURL  // 登录成功后的跳转地址
+        },
+        success: function(res) {
+          if (res.success) {
+            if (res.attributes && res.attributes.data){
+              window.location.href=res.attributes.data
+              return
+            }
+            window.location.href = ctx.backURL ? ctx.backURL : ctx.model.redirectURL ? (ctx.model.redirectURL + (ctx.model.redirectURL.indexOf('?') > -1 ? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : 'http://www.jihui88.com/member/index.html'
+          } else{
+            alert(res.msg)
+            ctx.refreshCode()
+          }
+        }
+      })
+    },
+    mobileToggle (e) {
+      if (e) {
+        this.mobile()
+      }
+      this.mobileShow = e
+    },
+    setTime: function(tar) {
+      var ctx = this
+      if (this.countdown == 0) {
+        $(tar).attr("disabled", false)
+        $(tar).val("发送验证码")
+        this.countdown = 60
+        return false
+      } else {
+        $(tar).attr("disabled", true)
+        $(tar).val("重新发送(" + this.countdown + ")")
+        this.countdown --
+      }
+      setTimeout(function() {
+        ctx.setTime(tar)
+      },1000)
     }
   }
 }
@@ -232,4 +356,6 @@ export default {
 .icon_close:hover{color:#aaa}
 .addBind-wx{position: absolute; left: 0px; top: 0px; height: 40px; width: 100%; padding-top: 30px; font-size: 20px; z-index: 99999; background-color:#fff;}
 .addBind-wx-2{position: absolute; bottom: 0; left: 0; z-index: 9999; background-color: #fff; width: 100%; height: 50px;}
+.item04 .to{float: right;color: #999;padding: 0 5px}
+#login .content li.item03 .mobileCode{ float: right; width: 33%;background:none;cursor: pointer;}
 </style>
