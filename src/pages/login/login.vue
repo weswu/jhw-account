@@ -1,6 +1,7 @@
 <style lang="less">
   body {
     background: #fff;
+    margin: 0;
   }
   .header{
     height: 85px;
@@ -46,6 +47,7 @@
         border-radius: 40px;
         color: #ff7333;
         font-size: 14px;
+        text-decoration: none;
       }
       .other{
         padding-top: 80px;
