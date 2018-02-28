@@ -18,7 +18,7 @@
       height: 600px;
       width: 1000px;
       margin: 0 auto;
-      background: url(/static/images/bg.png) no-repeat 20px 85px;
+      background: url(http://www.jihui88.com/member/static/images/bg.png) no-repeat 20px 85px;
     }
     // 表单
     .form{
@@ -57,7 +57,7 @@
         clear: both;position: relative;
         &:after {
           content: "";
-          background: url(/static/images/f-border.png) no-repeat;
+          background: url(http://www.jihui88.com/member/static/images/f-border.png) no-repeat;
           width: 85px;
           height: 3px;
           margin: 14px 0 0 -175px;
@@ -66,7 +66,7 @@
         }
         &:before {
           content: "";
-          background: url(/static/images/f-border.png) no-repeat 0 -3px;
+          background: url(http://www.jihui88.com/member/static/images/f-border.png) no-repeat 0 -3px;
           width: 85px;
           height: 3px;
           margin: 14px 0 0 90px;
@@ -97,7 +97,7 @@
         height: 39px;
         display: inline-block;
         margin: 0 8px;
-        background: url(/static/images/f-icon.png) no-repeat;
+        background: url(http://www.jihui88.com/member/static/images/f-icon.png) no-repeat;
       }
       .icon-wx{
         background-position: -39px 0;
@@ -143,7 +143,7 @@
     }
     .f-checkout-select{
       width: 10px;height: 10px;display: inline-block; margin-right: 5px;
-      background: url(/static/images/checkbox-selected.png) no-repeat;
+      background: url(http://www.jihui88.com/member/static/images/checkbox-selected.png) no-repeat;
     }
     .f-checkout-select.select{
       background-position: -10px 0;
@@ -275,13 +275,13 @@
   <div>
     <div class="header">
       <div class="wapper">
-        <img src="/static/images/logo2.jpg" alt="">
+        <img src="http://www.jihui88.com/member/static/images/logo2.jpg" alt="">
       </div>
     </div>
     <div class="content">
       <div class="wapper">
         <div class="form">
-          <img src="/static/images/f-logo.png" alt="" class="logo">
+          <img src="http://www.jihui88.com/member/static/images/f-logo.png" alt="" class="logo">
           <div class="f-init" v-if="page ==='init' || page ==='weixin' || page ==='qq'">
             <a @click="page='login'" href="javascript:;" class="f-btn">手机号／账号 登录</a>
             <a @click="page='register'" href="javascript:;" class="f-btn">注册</a>
@@ -342,7 +342,7 @@
     </div>
     <div class="alert" v-if="page === 'weixin' || page === 'qq'">
       <div class="head">
-        <span v-if="page === 'weixin'">微信</span><span v-if="page === 'qq'">QQ</span>登录<img src="/static/images/f-x.png" alt="" class="close" @click="page='init'">
+        <span v-if="page === 'weixin'">微信</span><span v-if="page === 'qq'">QQ</span>登录<img src="http://www.jihui88.com/member/static/images/f-x.png" alt="" class="close" @click="page='init'">
       </div>
       <div class="container">
         <div id="wxlogin_container" v-if="page === 'weixin'"></div>
