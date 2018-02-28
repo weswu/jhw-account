@@ -1,5 +1,5 @@
 <template>
-  <div :class="[]">
+  <div :class="isMobile?'userAgent':''">
     <div class="header">
       <div class="wapper">
         <img src="http://www.jihui88.com/member/static/images/logo2.jpg" alt="">
@@ -136,7 +136,9 @@ export default {
     // 绑定类型
     this.bindType = this.getUrlParam('bindType')
 
-    window.ua = navigator.userAgent.toLowerCase()
+    if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+      this.isMobile = true
+    }
   },
   mounted: function () {
     this.$nextTick(function () {
@@ -152,6 +154,16 @@ export default {
         window.location.href = ctx.backURL ? ctx.backURL : ctx.model.redirectURL ? (ctx.model.redirectURL + (ctx.model.redirectURL.indexOf('?') > -1 ? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : 'http://www.jihui88.com/member/index.html'
       }
     }, false)
+    var ctx = this
+    window.onresize = () => {
+      return (() => {
+        if (document.body.clientWidth < 400) {
+          ctx.isMobile = true
+        } else {
+          ctx.isMobile = false
+        }
+      })()
+    }
   },
   methods: {
     // 1.手机注册
@@ -189,8 +201,10 @@ export default {
     // 获取验证验
     getCode (e) {
       var ctx = this
-      e.target.value = '发送'
-      if (!this.isCode) {return this.isCode = true}
+      if (!this.isCode) {
+        e.target.value = '发送'
+        return this.isCode = true
+      }
       if (this.model.randCode === '') { return alert('请输入图片验证码') }
       this.countdown = 60
       $.ajax({
@@ -205,10 +219,16 @@ export default {
           if (res.success) {
             ctx.isCode = false
             ctx.setTime(e.currentTarget)
+            debugger
           } else {
-            ctx.countdown = 0
+            if (res.msg !== '请60秒后再刷新') {
+              ctx.countdown = 0
+              ctx.refreshCode()
+              ctx.model.randCode = ''
+            } else {
+              ctx.isCode = false
+            }
             alert(res.msg)
-            ctx.refreshCode()
           }
         }
       });
@@ -336,8 +356,13 @@ export default {
         },
         success: function(res) {
           if (res.success) {
-            this.qqUrl = 'https://graph.qq.com/oauth/show?which=ConfirmPage&display=pc&client_id=101370473&response_type=code&state=' + res.attributes.data + '_' + ctx.model.type + '_qq' + "&scope=&display=&redirect_uri=" +
+            var url = 'https://graph.qq.com/oauth/show?which=ConfirmPage&display=pc&client_id=101370473&response_type=code&state=' + res.attributes.data + '_' + ctx.model.type + '_qq' + "&scope=&display=&redirect_uri=" +
               encodeURIComponent("http://www.jihui88.com/rest/api/user/oauth?backURL=http://www.jihui88.com/member/qqRedirect.html")
+            if (ctx.addBind === '1') {
+              window.location.href = url
+            } else {
+              ctx.qqUrl = url
+            }
           }
         }
       })
@@ -380,6 +405,24 @@ export default {
   }
   a {
     text-decoration: none;
+  }
+  .userAgent{
+    .header{
+      display: none;
+    }
+    .content{
+      background: #fff;
+      .wapper{
+        width: 100%;
+        background: none;
+      }
+      .form{
+        width: 100%;
+        border: none;
+        margin-top: 0;
+      }
+    }
+
   }
   .header{
     height: 85px;
