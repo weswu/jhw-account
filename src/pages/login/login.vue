@@ -217,20 +217,20 @@
     input{
       border: 1px solid #d9d9d9;
       padding: 10px 15px;
-      width: 95px;
+      width: 90px;
       outline: 0 none;
       margin-top: 10px;
       border-radius: 3px;
     }
     img{
-      width: 75px;
       vertical-align: middle;
     }
     .mobileCode{
       width: 127px;
       background: #dedede;
       color: #999;
-      cursor: pointer;
+      cursor: pointer;height: 36px;
+    float: right;
     }
     .submit{
       margin-top: 15px;
@@ -328,11 +328,12 @@
             <div class="tip">
               为了安全，我们会向你的手机<br/>发送短信校验码
             </div>
-            <input type="text" name="randCode" v-model="model.randCode" @keyup.enter="registerMobile" placeholder="填写验证码">
-            <img :src="'http://www.jihui88.com/veriImg'+verifyPic"  @click="refreshCode"/><br/>
-            <input type="text" name="mobileCode" v-model="mobileCode" @keyup.enter="registerMobile" placeholder="填写短信验证码">
-            <input class="mobileCode" @click="getCode" type="button" value="发送短信">
-            <button type="button" class="submit" @click="register" v-if="page ==='message'">注册</button>
+            <input type="text" name="mobileCode" v-model="mobileCode" @keyup.enter="mobileSubmit" placeholder="短信验证码" v-if="!isCode">
+
+            <input class="randCode" type="text" name="randCode" v-model="model.randCode" @keyup.enter="mobileSubmit" placeholder="图片验证码" v-if="isCode">
+            <img :src="'http://www.jihui88.com/veriImg'+verifyPic"  @click="refreshCode" v-if="isCode"/>
+            <input class="mobileCode" @click="getCode" type="button" value="获取短信验证码" :style="isCode? 'width:67px' : ''">
+            <button type="button" class="submit" @click="mobileSubmit" v-if="page ==='message'">注册</button>
             <button type="button" class="submit" @click="mobileSubmit" v-if="page ==='mobileLogin'">登录</button>
           </div>
 
@@ -375,12 +376,13 @@ export default {
       oauthtype: '',
       // 手机
       state: '',
+      isCode: false,
       mobileCode: '',
       backURL: '',
       // 注册
-      page: 'init',
+      page: 'message',
       p: {
-        phone: '',
+        phone: '15168352892',
         password: ''
       },
       // qq
@@ -456,9 +458,10 @@ export default {
     // 获取验证验
     getCode (e) {
       var ctx = this
+      e.target.value = '发送'
+      if (!this.isCode) {return this.isCode = true}
       if (this.model.randCode === '') { return alert('请输入图片验证码') }
       this.countdown = 60
-      this.setTime(e.currentTarget)
       $.ajax({
         type: 'post',
         url: '/rest/api/user/sendCellphone',
@@ -469,6 +472,8 @@ export default {
         },
         success: function(res){
           if (res.success) {
+            ctx.isCode = false
+            ctx.setTime(e.currentTarget)
           } else {
             ctx.countdown = 0
             alert(res.msg)
@@ -476,33 +481,6 @@ export default {
           }
         }
       });
-    },
-    register () {
-      var ctx = this
-      if (this.model.username === '') { return alert('请输入注册账号') }
-      if (this.model.username.length < 4) { return alert('账号长度不小于4位') }
-      if (this.model.randCode === '') { return alert('手机验证码为空') }
-      if (this.model.password.length < 6) { return alert('密码长度不小于6位') }
-      var eTar = e.currentTarget
-      $(e.currentTarget).html('注册中...')
-      setTimeout(function() {
-        $(eTar).html('注册')
-      }, 5000)
-      $.ajax({
-        type: 'post',
-        url: '/rest/api/user/register',
-        data: {
-          model: JSON.stringify(this.model)
-        },
-        success: function(res) {
-          if (res.success) {
-            window.location.href = ctx.redirectUrl || "http://www.jihui88.com/member/index.html"
-          } else{
-            alert(res.msg)
-          }
-          $(e.currentTarget).html('注册')
-        }
-      })
     },
     // 手机登录
     mobileSubmit () {
@@ -519,7 +497,9 @@ export default {
           scope: ctx.scope,
           quick:'01',
           appId: ctx.appId,
-          backURL: this.backURL  // 登录成功后的跳转地址
+          backURL: this.backURL,  // 登录成功后的跳转地址
+          username: p.phone,
+          password: p.password
         },
         success: function(res) {
           if (res.success) {
@@ -647,7 +627,7 @@ export default {
       var ctx = this
       if (this.countdown == 0) {
         $(tar).attr("disabled", false)
-        $(tar).val("发送短信")
+        $(tar).val("获取短信验证码")
         this.countdown = 60
         return false
       } else {
