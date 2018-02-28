@@ -1,83 +1,356 @@
-<template>
-<div id="JH_wrap">
-  <div id="header">
-    <div id="login">
-      <img src="static/images/logo.png" alt="机汇网" class="logo" />
-      <h1>登入机汇网，建立企业自己的互联网销售平台</h1>
-      <div class="login">
-        <div class="title"><span v-if="addBind==='1'">第三方账号绑定</span><span v-else>会员登录</span></div>
-        <div class="content">
-          <!-- 账号登录 -->
-          <ul v-if="addBind!=='1' && !mobileShow">
-            <li class="item01"><input name="username" v-model="model.username" @keyup.enter="submit" type="text" placeholder="请输入账号/公司账号"></li>
-            <transition name="fade">
-              <li class="item01" v-if="checked"><input name="subusername" v-model="model.subusername" @keyup.enter="submit" type="text" placeholder="请输入员工账号"></li>
-            </transition>
-            <li class="item02"><input name="password" v-model="model.password" @keyup.enter="submit" type="password" placeholder="请输入密码"></li>
-          </ul>
-          <!-- 手机登录 -->
-          <ul v-if="addBind!=='1' && mobileShow">
-            <li class="item01"><input name="username" v-model="phone" @keyup.enter="submit" type="text" placeholder="请输入手机号"></li>
-          </ul>
+<style lang="less">
+  body {
+    background: #fff;
+  }
+  .header{
+    height: 85px;
+    .wapper{
+      width: 1000px;
+      margin: 0 auto;
+      img{
+        margin-top: 15px
+      }
+    }
+  }
+  .content{
+    background: #202020;
+    .wapper{
+      height: 600px;
+      width: 1000px;
+      margin: 0 auto;
+      background: url(/static/images/bg.png) no-repeat 20px 85px;
+    }
+    // 表单
+    .form{
+      width: 351px;
+      height: 501px;
+      box-sizing: border-box;
+      border: 1px solid #b9b9b9;
+      border-radius: 5px;
+      background: #fff;
+      float: right;
+      margin-top: 28px;
+      text-align: center;
+      font-family: '微软雅黑';
+      position: relative;
+      .logo{
+        margin: 82px auto 28px auto;
+      }
+      .f-btn {
+        display: block;
+        margin: 8px auto;
+        width: 257px;
+        height: 40px;
+        line-height: 40px;
+        border: 1px solid #ff7333;
+        border-radius: 40px;
+        color: #ff7333;
+        font-size: 14px;
+      }
+      .other{
+        padding-top: 80px;
+      }
+      .other-text{
+        text-align: center;
+        line-height: 30px;
+        height: 30px;
+        clear: both;position: relative;
+        &:after {
+          content: "";
+          background: url(/static/images/f-border.png) no-repeat;
+          width: 85px;
+          height: 3px;
+          margin: 14px 0 0 -175px;
+          display: inline-block;
+          position: absolute;
+        }
+        &:before {
+          content: "";
+          background: url(/static/images/f-border.png) no-repeat 0 -3px;
+          width: 85px;
+          height: 3px;
+          margin: 14px 0 0 90px;
+          display: inline-block;
+          position: absolute;
+        }
+        span {
+          width: 90px;
+          display: inline-block;
+          background: #fff;
+          color: #5b5b5b;
+          font-size: 12px;
+          box-sizing: border-box;
+        }
+      }
+      .other-icon{
+        padding-top: 5px;
+        span{
+          display: inline-block;
+          width: 50px;
+          color: #9b9b9b;
+          font-size: 12px;
+          margin: 0 5px;
+        }
+      }
+      .f-icon{
+        width: 39px;
+        height: 39px;
+        display: inline-block;
+        margin: 0 8px;
+        background: url(/static/images/f-icon.png) no-repeat;
+      }
+      .icon-wx{
+        background-position: -39px 0;
+      }
+      .icon-mobile{
+        background-position: -78px 0;
+      }
+    }
 
-          <ul v-if="addBind!=='1'">
-            <li class="item03">
-              <input type="text" id="model-randCode" name="randCode" v-model="model.randCode" @keyup.enter="submit" class="fl yzm" placeholder="请输入验证码">
-              <img :src="'http://www.jihui88.com/veriImg'+verifyPic"  @click="refreshCode"/><a class="refreshCode" @click="refreshCode" href="javascript:;">换一张？</a>
-            </li>
-            <li class="item03" v-if="mobileShow">
-              <input type="text" name="mobileCode" v-model="mobileCode" @keyup.enter="submit" class="fl yzm" placeholder="请输入短信验证码">
-              <input class="mobileCode" @click="getCode" type="button" value="发送验证码">
-            </li>
-            <li class="item04"><input type="checkbox" v-model="checked"><label @click="check">使用员工账号登录</label>
-              <a href="javascript:;" class="fr" v-if="!mobileShow" @click="mobileToggle(true)">手机登录</a>
-              <a href="javascript:;" class="fr" v-if="mobileShow" @click="mobileToggle(false)">账号登录</a>
-              <span class="to">|</span>
-              <a href="forget_password.html" class="fr">忘记密码</a>
-            </li>
-            <li class="item05"><button id="submit" type="button" class="submit" @click="submit">登录</button></li>
-            <li class="item06"><a href="register.html" class="fr">免费注册</a></li>
-            <li class="item07">第三方账号登录</li>
-          </ul>
-          <ul>
-            <li class="item08">
-              <a @click="qqLogin" href="javascript:;" class="iconfontyyy2 icon_qq">&#xe65b;</a>
-              <a @click="wxLogin" href="javascript:;" class="iconfontyyy2 icon_weixin">&#xe619;</a>
-            </li>
-          </ul>
-        </div>
+    .back-other{
+      color: #666666;
+      font-size: 12px;
+      position: absolute;
+      bottom: 17px;
+      width: 100px;
+      margin-left: -49px;
+    }
+    .back-other:hover{
+      text-decoration: underline;
+    }
+  }
+  .close{
+    position: absolute;
+    padding: 2px;
+    right:11px;
+    top:13px;
+    cursor: pointer;
+  }
+  // 登录
+  .f-login{
+    width: 260px;
+    margin: 0 auto;
+    .f-checkbox{
+      padding: 10px 0;
+      text-align: left;
+      font-size: 12px;
+      color: #ccc;
+    }
+    .veriImg{
+      position: absolute;
+      right: 15px;
+      margin-top: -29px;
+    }
+    .f-checkout-select{
+      width: 10px;height: 10px;display: inline-block; margin-right: 5px;
+      background: url(/static/images/checkbox-selected.png) no-repeat;
+    }
+    .f-checkout-select.select{
+      background-position: -10px 0;
+    }
+  }
+  // 表单
+  .f-input{
+    width: 260px;
+    box-sizing: border-box;
+    border: 1px solid #d9d9d9;
+    border-radius: 5px;
+    margin: 0 auto;
+    position: relative;
+    input{
+      border-radius: 5px;
+      border:none;
+      width:228px;
+      height: 17px;
+      padding: 10px 15px;
+      outline: 0 none;
+    }
+    .username{
+      border-bottom: 1px solid #d9d9d9;
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+    .forget-password{
+      position: absolute;
+      color: #ccc;
+      font-size: 12px;
+      right: 15px;
+      margin-top: -25px;
+    }
+  }
+  .submit{
+    background: #ff6700;
+    border-radius: 5px;
+    border: 0 none;
+    cursor: pointer;
+    display: block;
+    width: 260px;
+    margin: 0 auto;
+    text-align: center;
+    height: 38px;
+    color: #fff;
+    font-size: 14px;
+    transition: all 0.3s ease 0s;
+    -moz-transition: all 0.3s ease 0s;
+    -webkit-transition: all 0.3s ease 0s;
+    -o-transition: all 0.3s ease 0s;
+  }
+  .submit:hover {
+  	background:#ff4800;
+  }
+
+  .f-register{
+    .submit{
+      margin-top: 15px;
+    }
+  }
+  .f-message{
+    text-align: left;
+    width: 260px;
+    margin: 0 auto;
+    .tip{
+      font-size: 12px;
+      color: #666;
+      text-align: center;
+      padding-bottom: 10px;
+    }
+    input{
+      border: 1px solid #d9d9d9;
+      padding: 10px 15px;
+      width: 95px;
+      outline: 0 none;
+      margin-top: 10px;
+      border-radius: 3px;
+    }
+    img{
+      width: 75px;
+      vertical-align: middle;
+    }
+    .mobileCode{
+      width: 127px;
+      background: #dedede;
+      color: #999;
+      cursor: pointer;
+    }
+    .submit{
+      margin-top: 15px;
+    }
+  }
+  .alert {
+    width: 800px;
+    height: 600px;
+    margin: -300px 0 0 -400px;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    background: #fafafa;
+    z-index: 999;
+    border-radius: 3px;
+    box-shadow: 1px 1px 3px #aaa;
+    .head{
+      text-align: center;
+      font-size: 12px;
+      height: 39px;
+      line-height: 39px;
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px;
+      background: linear-gradient(#fff, #ddd);
+    }
+    .container{
+      width: 786px;
+      height: 554px;
+      margin: 1px auto 0 auto;
+      border: 2px solid #a5a5a5;
+      background: #fff;
+      #wxlogin_container{
+        text-align: center;
+      }
+      iframe{
+        width: 100%;height: 554px;border: none;
+      }
+    }
+  }
+</style>
+<template>
+  <div>
+    <div class="header">
+      <div class="wapper">
+        <img src="/static/images/logo2.jpg" alt="">
       </div>
-      <div class="oAuth__content" v-if="weixin">
-        <a @click="close" href="javascript:;"v-if="addBind!=='1'" class="iconfontyyy2 icon_close">&#xe66d;</a>
-        <div v-if="addBind==='1'" class="addBind-wx">微信账号绑定</div>
-        <div v-if="addBind==='1'" class="addBind-wx-2">请使用微信扫描二维码绑定账号</div>
-        <div id="wxlogin_container"></div>
-      </div>
-      <UserBind :openid="openid" :type="type" :oauthtype="oauthtype"  :redirectURL="model.redirectURL"  :backURL="backURL" v-if="openid !== ''"></UserBind>
     </div>
-  </div>
-  <div id="footer">
-    <div class="foot_wrap">
-      <div class="foot1">
-        <a href="javascript:;" class="f_mobile"><span class="iconfontyyy2">&#xe61d;</span>移动版<em>扫一扫，安装后台APP<img src="static/images/app_ewm.jpg" border="0" /></em></a>
-        <a href="/">首页</a><a href="http://www.ykzbrcw.com/company/company-show.php?id=6" target="_blank">诚征英才</a>
-        <a href="http://about.jihui88.com/" target="_blank">联系我们</a>
-        <a href="http://www.jihui88.com/join.html">欢迎加盟</a>
-        <a href="http://xueyuan.jihui88.com/news.html" target="_blank">网络营销学院</a>
-      </div>
-      <div class="foot2">
-        <div class="foot2_1">
-          友情连接：<a href="http://www.lezicj.com" title="不粘锅，不粘锅十大品牌，不粘锅厂家，不粘锅加盟，不粘锅批发" target="_blank">不粘锅</a><a href="http://zjbqa.com/" title="不锈钢水管" target="_blank">不锈钢水管</a><a href="http://www.yzgm.net/" title="强化门" target="_blank">强化门</a><a href="http://ykjldoors.com/"
-            title="金利门业" target="_blank">金利门业</a>
-        </div>
-        <div class="foot2_2">
-          <ul class="foot2_2_left">E-mail: 2406436@qq.com　|　互联网违法和不良信息举报　|　经营许可证编号：浙B2-20100285</ul>
-          <ul class="foot2_2_right">Copyright &copy; 2000-2017 机汇网</ul>
+    <div class="content">
+      <div class="wapper">
+        <div class="form">
+          <img src="/static/images/f-logo.png" alt="" class="logo">
+          <div class="f-init" v-if="page ==='init' || page ==='weixin' || page ==='qq'">
+            <a @click="page='login'" href="javascript:;" class="f-btn">手机号／账号 登录</a>
+            <a @click="page='register'" href="javascript:;" class="f-btn">注册</a>
+            <div class="other">
+              <div class="other-text">
+                <span>其他登录方式</span>
+              </div>
+              <div class="other-icon">
+                <a @click="wxLogin" href="javascript:;" class="f-icon"></a>
+                <a @click="qqLogin" href="javascript:;" class="f-icon icon-wx"></a>
+                <a @click="page='mobile'" href="javascript:;" class="f-icon icon-mobile"></a>
+                <br/>
+                <span>微信</span><span>QQ</span><span>快捷登录</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="f-login" v-if="page ==='login'">
+            <div class="f-input">
+              <input class="username" name="username" v-model="model.username" @keyup.enter="submit" type="text" placeholder="手机号／账号"/>
+              <input class="username" name="subusername" v-model="model.subusername" @keyup.enter="submit" type="text" placeholder="请输入员工账号" v-if="checked"/>
+              <input class="username" type="text" name="randCode" v-model="model.randCode" @keyup.enter="submit" placeholder="填写验证码">
+              <img class="veriImg" :src="'http://www.jihui88.com/veriImg'+verifyPic"  @click="refreshCode"/><br/>
+              <input class="password" name="password" v-model="model.password" @keyup.enter="submit" type="password" placeholder="请输入密码"/>
+              <a class="forget-password" target="_blank" href="http://www.jihui88.com/member/forget_password.html">重设密码</a>
+            </div>
+            <div class="f-checkbox">
+              <span class="f-checkout-select" v-if="!checked"></span>
+              <span class="f-checkout-select select" v-if="checked"></span>
+              <input type="checkbox" v-model="checked" hidden><label @click="check">使用员工账号登录</label>
+            </div>
+            <button type="button" class="submit" @click="submit">登录</button>
+          </div>
+          <!-- 手机登录 -->
+          <div class="f-register" v-if="page ==='register'||page ==='mobile'">
+            <div class="f-input">
+              <input :class="page==='register'?'username':''" name="phone" v-model="p.phone" @keyup.enter="registerMobile" type="text" placeholder="手机号"/>
+              <input class="password" name="password" v-model="p.password" @keyup.enter="registerMobile" type="password" placeholder="设置登录密码，不少于6位" v-if="page ==='register'"/>
+            </div>
+            <button type="button" class="submit" @click="registerMobile"><span v-if="page ==='register'">注册</span><span v-if="page ==='mobile'">登录</span></button>
+          </div>
+
+          <div class="f-message" v-if="page ==='message'||page ==='mobileLogin'">
+            <div class="tip">
+              为了安全，我们会向你的手机<br/>发送短信校验码
+            </div>
+            <input type="text" name="randCode" v-model="model.randCode" @keyup.enter="registerMobile" placeholder="填写验证码">
+            <img :src="'http://www.jihui88.com/veriImg'+verifyPic"  @click="refreshCode"/><br/>
+            <input type="text" name="mobileCode" v-model="mobileCode" @keyup.enter="registerMobile" placeholder="填写短信验证码">
+            <input class="mobileCode" @click="getCode" type="button" value="发送短信">
+            <button type="button" class="submit" @click="register" v-if="page ==='message'">注册</button>
+            <button type="button" class="submit" @click="mobileSubmit" v-if="page ==='mobileLogin'">登录</button>
+          </div>
+
+          <a @click="page='init'" href="javascript:;" class="back-other" v-if="page !=='init' && page !== 'weixin'">返回<span v-if="page ==='login'||page ==='mobile'||page ==='mobileLogin'">其他</span>登录</a>
         </div>
       </div>
     </div>
+    <div class="alert" v-if="page === 'weixin' || page === 'qq'">
+      <div class="head">
+        <span v-if="page === 'weixin'">微信</span><span v-if="page === 'qq'">QQ</span>登录<img src="/static/images/f-x.png" alt="" class="close" @click="page='init'">
+      </div>
+      <div class="container">
+        <div id="wxlogin_container" v-if="page === 'weixin'"></div>
+        <iframe v-if="page === 'qq'" :src="qqUrl"></iframe>
+      </div>
+    </div>
+    <UserBind :openid="openid" :type="type" :oauthtype="oauthtype"  :redirectURL="model.redirectURL"  :backURL="backURL" v-if="openid !== ''"></UserBind>
   </div>
-</div>
 </template>
 <script>
 import UserBind from './userBind.vue'
@@ -96,18 +369,22 @@ export default {
       },
       checked: false,
       verifyPic: '',
-      // 授权弹出框
-      weixin: false,
       // 用户绑定页面数据
       openid: '',
       type: '',
       oauthtype: '',
       // 手机
-      mobileShow: false,
       state: '',
       mobileCode: '',
-      phone: '',
-      backURL: ''
+      backURL: '',
+      // 注册
+      page: 'init',
+      p: {
+        phone: '',
+        password: ''
+      },
+      // qq
+      qqUrl: ''
     }
   },
   components: {
@@ -136,8 +413,129 @@ export default {
         this.qqLogin()
       }
     })
+    window.addEventListener('message', function (e) {
+      var data = e.data || {}
+      if (data.redirect === true) {
+        window.location.href = ctx.backURL ? ctx.backURL : ctx.model.redirectURL ? (ctx.model.redirectURL + (ctx.model.redirectURL.indexOf('?') > -1 ? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : 'http://www.jihui88.com/member/index.html'
+      }
+    }, false)
   },
   methods: {
+    // 1.手机注册
+    registerMobile () {
+      let test = /^1[3|4|5|7|8][0-9]\d{4,8}$/
+      if (!test.test(this.p.phone)) { return alert('不是有效的手机号码！') }
+      if (this.page === 'register'){
+        if (this.p.password.length < 6) { return alert('登录密码，不少于6位！') }
+        this.page = 'message'
+      } else {
+        this.page = 'mobileLogin'
+      }
+      this.model.randCode = ''
+      this.mobile()
+    },
+    // 切换到手机，获取state
+    mobile () {
+      var ctx = this
+      $.ajax({
+        url: '/rest/api/user/oauth',
+        data: {
+          requestType: 'state', // 请求state(必填)
+          redirectURL: ctx.model.redirectURL,
+          scope: ctx.scope,
+          appId: ctx.appId,
+          backURL: ctx.backURL   // 登录成功后的跳转地址
+        },
+        success: function(res) {
+          if (res.success) {
+            ctx.state = res.attributes.data + '_' + '0' + '_cellphone';
+          }
+        }
+      })
+    },
+    // 获取验证验
+    getCode (e) {
+      var ctx = this
+      if (this.model.randCode === '') { return alert('请输入图片验证码') }
+      this.countdown = 60
+      this.setTime(e.currentTarget)
+      $.ajax({
+        type: 'post',
+        url: '/rest/api/user/sendCellphone',
+        data: {
+          cellphone: this.p.phone,   // 手机号码(必填)
+          state: this.state,    // 第一步里获取到的state参数(必填)
+          randCode: this.model.randCode  // 图像验证码(必填)
+        },
+        success: function(res){
+          if (res.success) {
+          } else {
+            ctx.countdown = 0
+            alert(res.msg)
+            ctx.refreshCode()
+          }
+        }
+      });
+    },
+    register () {
+      var ctx = this
+      if (this.model.username === '') { return alert('请输入注册账号') }
+      if (this.model.username.length < 4) { return alert('账号长度不小于4位') }
+      if (this.model.randCode === '') { return alert('手机验证码为空') }
+      if (this.model.password.length < 6) { return alert('密码长度不小于6位') }
+      var eTar = e.currentTarget
+      $(e.currentTarget).html('注册中...')
+      setTimeout(function() {
+        $(eTar).html('注册')
+      }, 5000)
+      $.ajax({
+        type: 'post',
+        url: '/rest/api/user/register',
+        data: {
+          model: JSON.stringify(this.model)
+        },
+        success: function(res) {
+          if (res.success) {
+            window.location.href = ctx.redirectUrl || "http://www.jihui88.com/member/index.html"
+          } else{
+            alert(res.msg)
+          }
+          $(e.currentTarget).html('注册')
+        }
+      })
+    },
+    // 手机登录
+    mobileSubmit () {
+      var ctx = this
+      if (this.mobileCode === '') {
+        return alert('请填写手机号码和验证码')
+      }
+      $.ajax({
+        url: '/rest/api/user/oauth',
+        data: {
+          state: this.state,    // 第一步里获取到的state参数(必填)
+          code: this.mobileCode,    // 手机验证码(必填)
+          redirectURL: this.model.redirectURL,
+          scope: ctx.scope,
+          quick:'01',
+          appId: ctx.appId,
+          backURL: this.backURL  // 登录成功后的跳转地址
+        },
+        success: function(res) {
+          if (res.success) {
+            if (res.attributes && res.attributes.data){
+              window.location.href=res.attributes.data
+              return
+            }
+            window.location.href = ctx.backURL ? ctx.backURL : ctx.model.redirectURL ? (ctx.model.redirectURL + (ctx.model.redirectURL.indexOf('?') > -1 ? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : 'http://www.jihui88.com/member/index.html'
+          } else{
+            alert(res.msg)
+            ctx.refreshCode()
+          }
+        }
+      })
+    },
+    // 2.登录
     refreshCode () {
       this.verifyPic = '?time=' + new Date().getTime()
     },
@@ -145,10 +543,10 @@ export default {
       this.checked = !this.checked
     },
     submit (e) {
-      if (this.mobileShow) {return this.mobileSubmit()}
       var ctx = this
-      if (this.model.randCode === '') { return alert('请输入验证码') }
       if (this.model.username === '') { return alert('请输入账号') }
+      if (this.model.randCode === '') { return alert('请输入验证码') }
+      if (this.model.password === '') { return alert('请输入密码') }
       if (this.checked) {this.model.type = '1'} else {this.model.type = '0', this.subusername = ''}
       var eTar = e.currentTarget
       $(e.currentTarget).html('登录中...')
@@ -180,31 +578,10 @@ export default {
       $iframe.attr('src', url)
       setTimeout(function() { $iframe.remove(); if (callback) callback.call(this) }, 1000)
     },
-    // qq登录
-    qqLogin: function() {
-      var ctx = this;
-      $.ajax({
-        url: '/rest/api/user/oauth',
-        data: {
-          requestType: 'state',
-          redirectURL: ctx.model.redirectURL,
-          scope: ctx.scope,
-          appId: ctx.appId,
-          addBind: ctx.addBind,
-          backURL: ctx.backURL
-        },
-        success: function(res) {
-          if (res.success) {
-            window.location.href = 'https://graph.qq.com/oauth/show?which=ConfirmPage&display=pc&client_id=101370473&response_type=code&state=' + res.attributes.data + '_' + ctx.model.type + '_qq' + "&scope=&display=&redirect_uri=" +
-              encodeURIComponent("http://www.jihui88.com/rest/api/user/oauth")
-          }
-        }
-      })
-    },
     // 微信登录
     wxLogin () {
       var ctx = this
-      this.weixin = true
+      this.page = 'weixin'
       if (ctx.wxShow) { return false}
       $.ajax({
         url: '/rest/api/user/oauth',
@@ -232,8 +609,27 @@ export default {
         }
       })
     },
-    close () {
-      this.weixin = false
+    // qq登录
+    qqLogin: function() {
+      var ctx = this;
+      this.page = 'qq'
+      $.ajax({
+        url: '/rest/api/user/oauth',
+        data: {
+          requestType: 'state',
+          redirectURL: ctx.model.redirectURL,
+          scope: ctx.scope,
+          appId: ctx.appId,
+          addBind: ctx.addBind,
+          backURL: ctx.backURL
+        },
+        success: function(res) {
+          if (res.success) {
+            this.qqUrl = 'https://graph.qq.com/oauth/show?which=ConfirmPage&display=pc&client_id=101370473&response_type=code&state=' + res.attributes.data + '_' + ctx.model.type + '_qq' + "&scope=&display=&redirect_uri=" +
+              encodeURIComponent("http://www.jihui88.com/rest/api/user/oauth?backURL=http://www.jihui88.com/member/qqRedirect.html")
+          }
+        }
+      })
     },
     getUrlParam (name) {
       let url = location.search //获取url中"?"符后的字串
@@ -247,98 +643,16 @@ export default {
         }
       }
     },
-    // 获取验证验
-    getCode (e) {
-      var ctx = this
-      let test = /^1[3|4|5|7|8][0-9]\d{4,8}$/
-      if (!test.test(this.phone)) { return alert('不是有效的手机号码！') }
-      if (this.model.randCode === '') { return alert('请输入图片验证码') }
-      this.countdown = 60
-      this.setTime(e.currentTarget)
-      $.ajax({
-        type: 'post',
-        url: '/rest/api/user/sendCellphone',
-        data: {
-          cellphone: this.phone,   // 手机号码(必填)
-          state: this.state,    // 第一步里获取到的state参数(必填)
-          randCode: this.model.randCode  // 图像验证码(必填)
-        },
-        success: function(res){
-          if (res.success) {
-          } else {
-            ctx.countdown = 0
-            alert(res.msg)
-            ctx.refreshCode()
-          }
-        }
-      });
-    },
-    // 切换到手机，获取state
-    mobile () {
-      var ctx = this
-      $.ajax({
-        url: '/rest/api/user/oauth',
-        data: {
-          requestType: 'state', // 请求state(必填)
-          redirectURL: ctx.model.redirectURL,
-          scope: ctx.scope,
-          appId: ctx.appId,
-          backURL: ctx.backURL   // 登录成功后的跳转地址
-        },
-        success: function(res) {
-          if (res.success) {
-            ctx.state = res.attributes.data + '_' + '0' + '_cellphone';
-          }
-        }
-      })
-    },
-    // 手机登录
-    mobileSubmit () {
-      var ctx = this
-      if (this.phone === '' || this.mobileCode === '') {
-        return alert('请填写手机号码和验证码')
-      }
-      $.ajax({
-        url: '/rest/api/user/oauth',
-        data: {
-          state: this.state,    // 第一步里获取到的state参数(必填)
-          code: this.mobileCode,    // 手机验证码(必填)
-          redirectURL: this.model.redirectURL,
-          scope: ctx.scope,
-          quick:'01',
-          appId: ctx.appId,
-          backURL: this.backURL  // 登录成功后的跳转地址
-        },
-        success: function(res) {
-          if (res.success) {
-            if (res.attributes && res.attributes.data){
-              window.location.href=res.attributes.data
-              return
-            }
-            window.location.href = ctx.backURL ? ctx.backURL : ctx.model.redirectURL ? (ctx.model.redirectURL + (ctx.model.redirectURL.indexOf('?') > -1 ? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : 'http://www.jihui88.com/member/index.html'
-          } else{
-            alert(res.msg)
-            ctx.refreshCode()
-          }
-        }
-      })
-    },
-    mobileToggle (e) {
-      if (e) {
-        this.mobile()
-      }
-      this.mobileShow = e
-    },
     setTime: function(tar) {
       var ctx = this
       if (this.countdown == 0) {
         $(tar).attr("disabled", false)
-        $(tar).val("发送验证码")
+        $(tar).val("发送短信")
         this.countdown = 60
         return false
       } else {
         $(tar).attr("disabled", true)
-        $(tar).val("重新发送(" + this.countdown + ")")
+        $(tar).val("00:" + this.countdown)
         this.countdown --
       }
       setTimeout(function() {
@@ -348,14 +662,3 @@ export default {
   }
 }
 </script>
-<style>
-.fade-enter-active{transition:opacity .5s}
-.fade-enter,.fade-leave-to{opacity:0}
-.oAuth__content{position:absolute;top:169px;width:419px;background:#fff;text-align:center;min-height:375px}
-.icon_close{font-size:32px;color:#ddd;transition:all .3s ease 0s;-moz-transition:all .3s ease 0s;-webkit-transition:all .3s ease 0s;-o-transition:all .3s ease 0s;position:absolute;right:10px}
-.icon_close:hover{color:#aaa}
-.addBind-wx{position: absolute; left: 0px; top: 0px; height: 40px; width: 100%; padding-top: 30px; font-size: 20px; z-index: 99999; background-color:#fff;}
-.addBind-wx-2{position: absolute; bottom: 0; left: 0; z-index: 9999; background-color: #fff; width: 100%; height: 50px;}
-.item04 .to{float: right;color: #999;padding: 0 5px}
-#login .content li.item03 .mobileCode{ float: right; width: 33%;background:none;cursor: pointer;}
-</style>
