@@ -380,9 +380,9 @@ export default {
       mobileCode: '',
       backURL: '',
       // 注册
-      page: 'message',
+      page: 'init',
       p: {
-        phone: '15168352892',
+        phone: '',
         password: ''
       },
       // qq
@@ -486,7 +486,7 @@ export default {
     mobileSubmit () {
       var ctx = this
       if (this.mobileCode === '') {
-        return alert('请填写手机号码和验证码')
+        return alert('请填写短信验证码')
       }
       $.ajax({
         url: '/rest/api/user/oauth',
