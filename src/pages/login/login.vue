@@ -110,6 +110,7 @@ export default {
       isCode: false,
       mobileCode: '',
       backURL: '',
+      countdown: 60,
       // 注册
       page: 'init',
       p: {
@@ -207,6 +208,7 @@ export default {
       }
       if (this.model.randCode === '') { return alert('请输入图片验证码') }
       this.countdown = 60
+      this.setTime(e.currentTarget)
       $.ajax({
         type: 'post',
         url: '/rest/api/user/sendCellphone',
@@ -218,8 +220,6 @@ export default {
         success: function(res){
           if (res.success) {
             ctx.isCode = false
-            ctx.setTime(e.currentTarget)
-            debugger
           } else {
             if (res.msg !== '请60秒后再刷新') {
               ctx.countdown = 0
@@ -322,7 +322,8 @@ export default {
           scope: ctx.scope,
           appId: ctx.appId,
           addBind: ctx.addBind,
-          backURL: ctx.backURL
+          backURL: ctx.backURL,
+          quick: '01'
         },
         success: function(res) {
           if (res.success) {
@@ -352,7 +353,8 @@ export default {
           scope: ctx.scope,
           appId: ctx.appId,
           addBind: ctx.addBind,
-          backURL: ctx.backURL
+          backURL: ctx.backURL,
+          quick: '01'
         },
         success: function(res) {
           if (res.success) {
