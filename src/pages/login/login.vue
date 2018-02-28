@@ -500,8 +500,8 @@ export default {
           quick:'01',
           appId: ctx.appId,
           backURL: this.backURL,  // 登录成功后的跳转地址
-          username: p.phone,
-          password: p.password
+          username: this.p.phone,
+          password: this.p.password
         },
         success: function(res) {
           if (res.success) {
