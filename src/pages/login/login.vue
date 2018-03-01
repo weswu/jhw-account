@@ -327,7 +327,7 @@ export default {
           appId: ctx.appId,
           addBind: ctx.addBind,
           backURL: ctx.backURL,
-          quick: '01'
+          quick: ctx.addBind ? '00' :'01'
         },
         success: function(res) {
           if (res.success) {
@@ -357,7 +357,7 @@ export default {
           appId: ctx.appId,
           addBind: ctx.addBind,
           backURL: ctx.backURL,
-          quick: '01'
+          quick: ctx.addBind ? '00' :'01'
         },
         success: function(res) {
           if (res.success) {
