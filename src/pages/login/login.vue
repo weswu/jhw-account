@@ -61,13 +61,18 @@
             <div class="tip">
               为了安全，我们会向你的手机<br/>发送短信校验码
             </div>
-            <input type="text" name="mobileCode" v-model="mobileCode" @keyup.enter="mobileSubmit" placeholder="短信验证码" v-if="!isCode">
+            <div v-if="!isCode">
+              <input class="randCode" type="text" name="randCode" v-model="model.randCode" @keyup.enter="mobileSubmit" placeholder="图片验证码">
+              <img :src="'http://www.jihui88.com/veriImg'+verifyPic"  @click="refreshCode" />
+            </div>
+            <div v-if="isCode">
+              <input type="text" name="mobileCode" v-model="mobileCode" @keyup.enter="mobileSubmit" placeholder="短信验证码" >
+              <input class="mobileCode" @click="getCode" type="button" :value="countText">
+            </div>
 
-            <input class="randCode" type="text" name="randCode" v-model="model.randCode" @keyup.enter="mobileSubmit" placeholder="图片验证码" v-if="isCode">
-            <img :src="'http://www.jihui88.com/veriImg'+verifyPic"  @click="refreshCode" v-if="isCode"/>
-            <input class="mobileCode" @click="getCode" type="button" value="获取短信验证码" :style="isCode? 'width:67px' : ''">
-            <button type="button" class="submit" @click="mobileSubmit" v-if="page ==='message'">注册</button>
-            <button type="button" class="submit" @click="mobileSubmit" v-if="page ==='mobileLogin'">登录</button>
+
+            <button type="button" class="submit" @click="getCode" v-if="!isCode">发送手机短信验证码</button>
+            <button type="button" class="submit" @click="mobileSubmit" v-if="isCode">注册</button>
           </div>
 
           <a @click="page='init'" href="javascript:;" class="back-other" v-if="page !=='init' && page !== 'weixin'">返回<span v-if="page ==='login'||page ==='mobile'||page ==='mobileLogin'">其他</span>登录</a>
@@ -111,10 +116,11 @@ export default {
       mobileCode: '',
       backURL: '',
       countdown: 60,
+      countText: '重新发送短信',
       // 注册
-      page: 'init',
+      page: 'message',
       p: {
-        phone: '',
+        phone: '15168352892',
         password: ''
       },
       // qq
@@ -200,15 +206,12 @@ export default {
       })
     },
     // 获取验证验
-    getCode (e) {
+    getCode () {
       var ctx = this
-      if (!this.isCode) {
-        e.target.value = '发送'
-        return this.isCode = true
-      }
       if (this.model.randCode === '') { return alert('请输入图片验证码') }
-      this.countdown = 60
-      this.setTime(e.currentTarget)
+      if (!this.isCode) {
+        this.isCode = true
+      }
       $.ajax({
         type: 'post',
         url: '/rest/api/user/sendCellphone',
@@ -219,14 +222,14 @@ export default {
         },
         success: function(res){
           if (res.success) {
-            ctx.isCode = false
+            ctx.setTime()
           } else {
             if (res.msg !== '请60秒后再刷新') {
-              ctx.countdown = 0
+              ctx.isCode = false
+            } else {
+              ctx.countdown = 60
               ctx.refreshCode()
               ctx.model.randCode = ''
-            } else {
-              ctx.isCode = false
             }
             alert(res.msg)
           }
@@ -381,20 +384,18 @@ export default {
         }
       }
     },
-    setTime: function(tar) {
+    setTime: function() {
       var ctx = this
       if (this.countdown == 0) {
-        $(tar).attr("disabled", false)
-        $(tar).val("获取短信验证码")
+        this.countText = '获取短信验证码'
         this.countdown = 60
         return false
       } else {
-        $(tar).attr("disabled", true)
-        $(tar).val("00:" + this.countdown)
+        this.countText = '00:' + this.countdown
         this.countdown --
       }
       setTimeout(function() {
-        ctx.setTime(tar)
+        ctx.setTime()
       },1000)
     }
   }
@@ -641,7 +642,7 @@ export default {
     input{
       border: 1px solid #d9d9d9;
       padding: 10px 15px;
-      width: 90px;
+      width: 100px;
       outline: 0 none;
       margin-top: 10px;
       border-radius: 3px;
@@ -650,14 +651,15 @@ export default {
       vertical-align: middle;
     }
     .mobileCode{
-      width: 127px;
-      background: #dedede;
-      color: #999;
-      cursor: pointer;height: 36px;
-    float: right;
+      height: 36px;
+      float: right;width: 120px;
     }
     .submit{
       margin-top: 15px;
+      background: #7b7b7b;
+    }
+    .submit:hover {
+    	background:#ff6700;
     }
   }
   .alert {
