@@ -36,7 +36,7 @@
               </div>
               <div class="">
                 <input type="text" name="randCode" v-model="model.randCode" @keyup.enter="submit" placeholder="填写验证码">
-                <img class="veriImg" :src="'http://www.jihui88.com/veriImg'+verifyPic"  @click="refreshCode"/>
+                <img class="veriImg" :src="'http://www.jihui88.com/alphveriImg'+verifyPic"  @click="refreshCode"/>
               </div>
             </div>
             <div class="f-checkbox">
@@ -63,7 +63,7 @@
             </div>
             <div v-if="!isCode">
               <input class="randCode" type="text" name="randCode" v-model="model.randCode" @keyup.enter="mobileSubmit" placeholder="图片验证码">
-              <img :src="'http://www.jihui88.com/veriImg'+verifyPic"  @click="refreshCode" />
+              <img class="veriImg" :src="'http://www.jihui88.com/alphveriImg'+verifyPic"  @click="refreshCode" />
             </div>
             <div v-if="isCode">
               <input type="text" name="mobileCode" v-model="mobileCode" @keyup.enter="mobileSubmit" placeholder="短信验证码" >
@@ -118,9 +118,9 @@ export default {
       countdown: 60,
       countText: '重新发送短信',
       // 注册
-      page: 'message',
+      page: 'init',
       p: {
-        phone: '15168352892',
+        phone: '',
         password: ''
       },
       // qq
@@ -563,8 +563,8 @@ export default {
     }
     .veriImg{
       position: absolute;
-      right: 15px;
-      margin-top: -29px;
+      right: 14px;
+      margin-top: -31px;width: 65px;
     }
     .f-checkout-select{
       width: 10px;height: 10px;display: inline-block; margin-right: 5px;
@@ -648,7 +648,7 @@ export default {
       border-radius: 3px;
     }
     img{
-      vertical-align: middle;
+      vertical-align: middle;height: 36px;
     }
     .mobileCode{
       height: 36px;
