@@ -72,7 +72,7 @@
 
 
             <button type="button" class="submit" @click="getCode" v-if="!isCode">发送手机短信验证码</button>
-            <button type="button" class="submit" @click="mobileSubmit" v-if="isCode">注册</button>
+            <button type="button" class="submit" @click="mobileSubmit" v-if="isCode"><span v-if="page ==='message'">注册</span><span v-if="page ==='mobileLogin'">登录</span></button>
           </div>
 
           <a @click="page='init'" href="javascript:;" class="back-other" v-if="page !=='init' && page !== 'weixin'">返回<span v-if="page ==='login'||page ==='mobile'||page ==='mobileLogin'">其他</span>登录</a>
@@ -316,7 +316,6 @@ export default {
     wxLogin () {
       var ctx = this
       this.page = 'weixin'
-      if (ctx.wxShow) { return false}
       $.ajax({
         url: '/rest/api/user/oauth',
         data: {
@@ -330,7 +329,6 @@ export default {
         },
         success: function(res) {
           if (res.success) {
-            ctx.wxShow = true
             new WxLogin({
               id: 'wxlogin_container',
               appid: 'wx308c58370e47720c',
