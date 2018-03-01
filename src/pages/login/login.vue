@@ -25,7 +25,7 @@
               </div>
             </div>
           </div>
-
+          <!-- 账号登录 -->
           <div class="f-login" v-if="page ==='login'">
             <div class="f-input">
               <input class="username" name="username" v-model="model.username" @keyup.enter="submit" type="text" placeholder="手机号／账号"/>
@@ -54,9 +54,9 @@
               <input :class="page==='register'?'username':''" name="phone" v-model="p.phone" @keyup.enter="registerMobile" type="text" placeholder="手机号"/>
               <input class="password" name="password" v-model="p.password" @keyup.enter="registerMobile" type="password" placeholder="设置登录密码，不少于6位" v-if="page ==='register'"/>
             </div>
-            <button type="button" class="submit" @click="registerMobile"><span v-if="page ==='register'">注册</span><span v-if="page ==='mobile'">登录</span></button>
+            <button type="button" class="submit" @click="registerMobile"><span v-if="bindType ==='cellphone'">确定</span><span v-else-if="page ==='mobile'">登录</span><span v-else-if="page ==='register'">注册</span></button>
           </div>
-
+          <!-- 手机验证 -->
           <div class="f-message" v-if="page ==='message'||page ==='mobileLogin'">
             <div class="tip">
               为了安全，我们会向你的手机<br/>发送短信校验码
@@ -70,9 +70,8 @@
               <input class="mobileCode" @click="getCode" type="button" :value="countText">
             </div>
 
-
             <button type="button" class="submit" @click="getCode" v-if="!isCode">发送手机短信验证码</button>
-            <button type="button" class="submit" @click="mobileSubmit" v-if="isCode"><span v-if="page ==='message'">注册</span><span v-if="page ==='mobileLogin'">登录</span></button>
+            <button type="button" class="submit" @click="mobileSubmit" v-if="isCode"><span v-if="bindType ==='cellphone'">确定</span><span v-else-if="page ==='mobileLogin'">登录</span><span v-else-if="page ==='message'">注册</span></button>
           </div>
 
           <a @click="page='init'" href="javascript:;" class="back-other" v-if="page !=='init' && page !== 'weixin'">返回<span v-if="page ==='login'||page ==='mobile'||page ==='mobileLogin'">其他</span>登录</a>
@@ -155,6 +154,8 @@ export default {
         this.wxLogin()
       } else if (this.bindType === 'qq') {
         this.qqLogin()
+      } else if (this.bindType === 'cellphone') {
+        this.page = 'mobile'
       }
     })
     window.addEventListener('message', function (e) {
@@ -251,7 +252,7 @@ export default {
           code: this.mobileCode,    // 手机验证码(必填)
           redirectURL: this.model.redirectURL,
           scope: ctx.scope,
-          quick:'01',
+          quick:ctx.addBind ? '00': '01',
           appId: ctx.appId,
           backURL: this.backURL,  // 登录成功后的跳转地址
           username: this.p.phone,
