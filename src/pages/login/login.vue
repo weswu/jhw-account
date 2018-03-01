@@ -361,13 +361,8 @@ export default {
         },
         success: function(res) {
           if (res.success) {
-            var url = 'https://graph.qq.com/oauth/show?which=ConfirmPage&display=pc&client_id=101370473&response_type=code&state=' + res.attributes.data + '_' + ctx.model.type + '_qq' + "&scope=&display=&redirect_uri=" +
+            ctx.qqUrl = 'https://graph.qq.com/oauth/show?which=ConfirmPage&display=pc&client_id=101370473&response_type=code&state=' + res.attributes.data + '_' + ctx.model.type + '_qq' + "&scope=&display=&redirect_uri=" +
               encodeURIComponent("http://www.jihui88.com/rest/api/user/oauth?backURL=http://www.jihui88.com/member/qqRedirect.html")
-            if (ctx.addBind === '1') {
-              window.location.href = url
-            } else {
-              ctx.qqUrl = url
-            }
           }
         }
       })
