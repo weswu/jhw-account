@@ -21,7 +21,7 @@
                 <a @click="qqLogin" href="javascript:;" class="f-icon icon-wx" v-if="!isAppMobile"></a>
                 <a @click="page='mobile'" href="javascript:;" class="f-icon icon-mobile"></a>
                 <br/>
-                <span v-if="!isAppMobile">微信</span><span v-if="!isAppMobile">QQ</span><span>快捷登录</span>
+                <span v-if="!isAppMobile">微信</span><span v-if="!isAppMobile">QQ</span><span>手机</span>
               </div>
             </div>
           </div>
@@ -199,10 +199,12 @@ export default {
           redirectURL: ctx.model.redirectURL,
           scope: ctx.scope,
           appId: ctx.appId,
-          backURL: ctx.backURL   // 登录成功后的跳转地址
+          addBind: ctx.addBind,
+          backURL: ctx.backURL,   // 登录成功后的跳转地址
+          quick: ctx.addBind ? '00' :'01'
         },
         success: function(res) {
-          if (res.success) {
+          if (res && res.success) {
             ctx.state = res.attributes.data + '_' + '0' + '_cellphone';
           }
         }
@@ -252,20 +254,21 @@ export default {
           code: this.mobileCode,    // 手机验证码(必填)
           redirectURL: this.model.redirectURL,
           scope: ctx.scope,
-          quick:ctx.addBind ? '00': '01',
+          quick: ctx.addBind ? '00': '01',
+          addBind: ctx.addBind,
           appId: ctx.appId,
           backURL: this.backURL,  // 登录成功后的跳转地址
           username: this.p.phone,
           password: this.p.password
         },
         success: function(res) {
-          if (res.success) {
+          if (res && res.success) {
             if (res.attributes && res.attributes.data){
               window.location.href=res.attributes.data
               return
             }
             window.location.href = ctx.backURL ? ctx.backURL : ctx.model.redirectURL ? (ctx.model.redirectURL + (ctx.model.redirectURL.indexOf('?') > -1 ? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : 'http://www.jihui88.com/member/index.html'
-          } else{
+          } else if (res && res.msg) {
             alert(res.msg)
             ctx.refreshCode()
           }
