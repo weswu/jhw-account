@@ -17,11 +17,11 @@
                 <span>其他登录方式</span>
               </div>
               <div class="other-icon">
-                <a @click="wxLogin" href="javascript:;" class="f-icon"></a>
-                <a @click="qqLogin" href="javascript:;" class="f-icon icon-wx"></a>
+                <a @click="wxLogin" href="javascript:;" class="f-icon" v-if="!isAppMobile"></a>
+                <a @click="qqLogin" href="javascript:;" class="f-icon icon-wx" v-if="!isAppMobile"></a>
                 <a @click="page='mobile'" href="javascript:;" class="f-icon icon-mobile"></a>
                 <br/>
-                <span>微信</span><span>QQ</span><span>快捷登录</span>
+                <span v-if="!isAppMobile">微信</span><span v-if="!isAppMobile">QQ</span><span>快捷登录</span>
               </div>
             </div>
           </div>
@@ -125,7 +125,8 @@ export default {
       },
       // qq
       qqUrl: '',
-      isMobile: false
+      isMobile: false,
+      isAppMobile: false
     }
   },
   created () {
@@ -145,6 +146,7 @@ export default {
 
     if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
       this.isMobile = true
+      this.isAppMobile = true
     }
   },
   mounted: function () {
