@@ -1,5 +1,5 @@
 <template>
-  <div :class="isMobile?'userAgent':''">
+  <div :class="isMobile || dialog === '1'?'userAgent':''">
     <div class="header">
       <div class="wapper">
         <img src="http://www.jihui88.com/member/static/images/logo2.jpg" alt="">
@@ -87,6 +87,13 @@
         <iframe v-if="page === 'qq'" :src="qqUrl"></iframe>
       </div>
     </div>
+    <!-- 微信 -->
+    <div class="oAuth__content" v-if="page === 'weixin'">
+      <img src="http://www.jihui88.com/member/static/images/f-x.png" alt="" class="close" @click="page='init'">
+      <div id="wxlogin_container2">
+<iframe src="https://open.weixin.qq.com/connect/qrconnect?appid=wx308c58370e47720c&amp;scope=snsapi_login&amp;redirect_uri=http%3A%2F%2Fwww.jihui88.com%2Frest%2Fapi%2Fuser%2Foauth&amp;state=vrdw2rh1q7jcd4z7mc930dksn39nd8uh_0_weixin&amp;login_type=jssdk&amp;self_redirect=default&amp;style=black" frameborder="0" scrolling="no" width="300px" height="400px"></iframe>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -142,6 +149,8 @@ export default {
     this.addBind = this.getUrlParam('addBind')
     // 绑定类型
     this.bindType = this.getUrlParam('bindType')
+    // 弹出框
+    this.dialog = this.getUrlParam('dialog')
 
     if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
       this.isMobile = true
@@ -160,7 +169,7 @@ export default {
     })
     window.addEventListener('message', function (e) {
       var data = e.data || {}
-      if (data.redirect === true) {
+      if (data.type === 1) {
         window.location.href = ctx.backURL ? ctx.backURL : ctx.model.redirectURL ? (ctx.model.redirectURL + (ctx.model.redirectURL.indexOf('?') > -1 ? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : 'http://www.jihui88.com/member/index.html'
       }
     }, false)
@@ -335,8 +344,12 @@ export default {
         },
         success: function(res) {
           if (res.success) {
+            var id = 'wxlogin_container'
+            if (ctx.dialog === '1') {
+              id = 'wxlogin_container2'
+            }
             new WxLogin({
-              id: 'wxlogin_container',
+              id: id,
               appid: 'wx308c58370e47720c',
               scope: 'snsapi_login',
               redirect_uri: encodeURIComponent('http://www.jihui88.com/rest/api/user/oauth'),
@@ -365,8 +378,13 @@ export default {
         },
         success: function(res) {
           if (res.success) {
-            ctx.qqUrl = 'https://graph.qq.com/oauth/show?which=ConfirmPage&display=pc&client_id=101370473&response_type=code&state=' + res.attributes.data + '_' + ctx.model.type + '_qq' + "&scope=&display=&redirect_uri=" +
+            var url = 'https://graph.qq.com/oauth/show?which=ConfirmPage&display=pc&client_id=101370473&response_type=code&state=' + res.attributes.data + '_' + ctx.model.type + '_qq' + "&scope=&display=&redirect_uri=" +
               encodeURIComponent("http://www.jihui88.com/rest/api/user/oauth?backURL=http://www.jihui88.com/member/qqRedirect.html")
+              if (ctx.dialog === '1') {
+                window.location.href = url
+              } else {
+                ctx.qqUrl = url
+              }
           }
         }
       })
@@ -694,5 +712,14 @@ export default {
         width: 100%;height: 554px;border: none;
       }
     }
+  }
+  .oAuth__content{
+    position: absolute;
+    top: 40px;
+    width: 100%;
+    background: #fff;
+    text-align: center;
+    min-height: 375px;
+    z-index: 1000;
   }
 </style>
