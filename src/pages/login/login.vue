@@ -357,7 +357,7 @@ export default {
               id: id,
               appid: 'wx308c58370e47720c',
               scope: 'snsapi_login',
-              redirect_uri: encodeURIComponent('http://www.jihui88.com/rest/api/user/oauth'),
+              redirect_uri: encodeURIComponent('http://www.jihui88.com/rest/api/user/oauth?backURL=http://www.jihui88.com/member/qqRedirect.html'),
               state: res.attributes.data + '_' + ctx.model.type + '_weixin',
               style: 'black',
               href: ''
@@ -414,12 +414,16 @@ export default {
         this.countdown = 60
         return false
       } else {
-        this.countText = '00:' + this.countdown
+        if (countdown < 10) {
+          this.countText = '00:0' + this.countdown
+        } else {
+          this.countText = '00:' + this.countdown
+        }
         this.countdown --
+        setTimeout(function() {
+          ctx.setTime()
+        },1000)
       }
-      setTimeout(function() {
-        ctx.setTime()
-      },1000)
     }
   }
 }
