@@ -721,11 +721,14 @@ export default {
   }
   .oAuth__content{
     position: absolute;
-    top: 40px;
+    top: 0;
     width: 100%;
     background: #fff;
     text-align: center;
     min-height: 375px;
     z-index: 1000;
+    #wxlogin_container2{
+      margin-top: 40px;
+    }
   }
 </style>
