@@ -151,6 +151,8 @@ export default {
     this.bindType = this.getUrlParam('bindType')
     // 弹出框
     this.dialog = this.getUrlParam('dialog')
+    // 注册来源
+    this.model.domain = this.getUrlParam('domain')
 
     if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
       this.isMobile = true
@@ -210,7 +212,8 @@ export default {
           appId: ctx.appId,
           addBind: ctx.addBind,
           backURL: ctx.backURL,   // 登录成功后的跳转地址
-          quick: ctx.addBind ? '00' :'01'
+          quick: ctx.addBind ? '00' :'01',
+          domain: ctx.model.domain
         },
         success: function(res) {
           if (res && res.success) {
@@ -268,7 +271,8 @@ export default {
           appId: ctx.appId,
           backURL: this.backURL,  // 登录成功后的跳转地址
           username: this.p.phone,
-          password: this.p.password
+          password: this.p.password,
+          domain: this.model.domain
         },
         success: function(res) {
           if (res && res.success) {
@@ -340,7 +344,8 @@ export default {
           appId: ctx.appId,
           addBind: ctx.addBind,
           backURL: ctx.backURL,
-          quick: ctx.addBind ? '00' :'01'
+          quick: ctx.addBind ? '00' :'01',
+          domain: ctx.model.domain
         },
         success: function(res) {
           if (res.success) {
@@ -374,7 +379,8 @@ export default {
           appId: ctx.appId,
           addBind: ctx.addBind,
           backURL: ctx.backURL,
-          quick: ctx.addBind ? '00' :'01'
+          quick: ctx.addBind ? '00' :'01',
+          domain: ctx.model.domain
         },
         success: function(res) {
           if (res.success) {

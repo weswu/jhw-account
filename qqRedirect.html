@@ -1,15 +1,36 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>
-    <script type="text/javascript">
-      let dataJson = {
-        type: 1
-      }
-      window.parent.postMessage(dataJson, '*')
-    </script>
-  </body>
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+</head>
+
+<body>
+  <script type="text/javascript">
+  let dataJson = {
+    type: 1
+  }
+
+  function getUrlParam(name, url) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    if (typeof url !== 'undefined')
+      url = url.substring(url.indexOf('?'), url.length);
+    var path = url || window.location.search;
+    var r = path.substr(1).match(reg);
+    if (r != null) return unescape(r[2]);
+    return null;
+  }
+
+  var addBind = getUrlParam("addBind");
+  var bindType = getUrlParam("bindType");
+  if (addBind && addBind === '1') {
+    alert('addBind=' + addBind + ',bindType=' + bindType);
+  } else {
+    window.parent.postMessage(dataJson, '*')
+  }
+
+  </script>
+</body>
+
 </html>
