@@ -88,7 +88,7 @@
       </div>
     </div>
     <!-- 微信 -->
-    <div class="oAuth__content" v-if="page === 'weixin'">
+    <div class="oAuth__content" v-if="page === 'weixin' && scope === 'snsapi_login_quick'">
       <img src="http://www.jihui88.com/member/static/images/f-x.png" alt="" class="close" @click="page='init'">
       <div id="wxlogin_container2">
 <iframe src="https://open.weixin.qq.com/connect/qrconnect?appid=wx308c58370e47720c&amp;scope=snsapi_login&amp;redirect_uri=http%3A%2F%2Fwww.jihui88.com%2Frest%2Fapi%2Fuser%2Foauth&amp;state=vrdw2rh1q7jcd4z7mc930dksn39nd8uh_0_weixin&amp;login_type=jssdk&amp;self_redirect=default&amp;style=black" frameborder="0" scrolling="no" width="300px" height="400px"></iframe>
@@ -386,6 +386,9 @@ export default {
               encodeURIComponent("http://www.jihui88.com/rest/api/user/oauth?backURL=http://www.jihui88.com/member/qqRedirect.html")
               if (ctx.scope === 'snsapi_login_quick') {
                 window.location.href = url
+                window.parent.postMessage({
+                  type: 'qq'
+                }, '*')
               } else {
                 ctx.qqUrl = url
               }
