@@ -150,7 +150,7 @@ export default {
     // 注册来源
     this.model.domain = this.getUrlParam('domain')
     // 注册
-    this.page = this.getUrlParam('page')
+    this.page = this.getUrlParam('page') || 'init'
 
     if (this.scope === 'snsapi_login_quick'){
       this.isMobile = true
@@ -179,7 +179,7 @@ export default {
     var ctx = this
     window.onresize = () => {
       return (() => {
-        if (document.body.clientWidth < 400) {
+        if (document.body.clientWidth < 400 || ctx.scope === 'snsapi_login_quick') {
           ctx.isMobile = true
         } else {
           ctx.isMobile = false
