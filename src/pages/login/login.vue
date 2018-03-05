@@ -74,11 +74,11 @@
             <button type="button" class="submit" @click="mobileSubmit" v-if="isCode"><span v-if="bindType ==='cellphone'">确定</span><span v-else-if="page ==='mobileLogin'">登录</span><span v-else-if="page ==='message'">注册</span></button>
           </div>
 
-          <a @click="page='init'" href="javascript:;" class="back-other" v-if="page !=='init' && page !== 'weixin'">返回<span v-if="page ==='login'||page ==='mobile'||page ==='mobileLogin'">其他</span>登录</a>
+          <a @click="page='init'" href="javascript:;" class="back-other" v-if="page !=='init' && page !== 'weixin' && page !== 'qq'">返回<span v-if="page ==='login'||page ==='mobile'||page ==='mobileLogin'">其他</span>登录</a>
         </div>
       </div>
     </div>
-    <div class="alert" v-if="(page === 'weixin' || page === 'qq') && scope !== 'snsapi_login_quick'">
+    <div class="alert" v-if="(page === 'weixin' || page === 'qq') && !isMobile">
       <div class="head">
         <span v-if="page === 'weixin'">微信</span><span v-if="page === 'qq'">QQ</span>登录<img src="http://www.jihui88.com/member/static/images/f-x.png" alt="" class="close" @click="page='init'">
       </div>
@@ -88,10 +88,8 @@
       </div>
     </div>
     <!-- 微信 -->
-    <div class="oAuth__content" v-if="page === 'weixin' && scope === 'snsapi_login_quick'">
-      <div id="wxlogin_container2">
-<iframe src="https://open.weixin.qq.com/connect/qrconnect?appid=wx308c58370e47720c&amp;scope=snsapi_login&amp;redirect_uri=http%3A%2F%2Fwww.jihui88.com%2Frest%2Fapi%2Fuser%2Foauth&amp;state=vrdw2rh1q7jcd4z7mc930dksn39nd8uh_0_weixin&amp;login_type=jssdk&amp;self_redirect=default&amp;style=black" frameborder="0" scrolling="no" width="300px" height="400px"></iframe>
-      </div>
+    <div class="oAuth__content" v-if="page === 'weixin' && isMobile">
+      <div id="wxlogin_container2"></div>
       <a @click="page='init'" href="javascript:;" class="back-other">返回其他登录</a>
     </div>
   </div>
