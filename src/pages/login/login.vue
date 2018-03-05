@@ -149,6 +149,8 @@ export default {
     this.bindType = this.getUrlParam('bindType')
     // 注册来源
     this.model.domain = this.getUrlParam('domain')
+    // 注册
+    this.page = this.getUrlParam('page')
 
     if (this.scope === 'snsapi_login_quick'){
       this.isMobile = true
@@ -732,7 +734,7 @@ export default {
     background: #fff;
     text-align: center;
     z-index: 1000;
-    height: 485px;
+    height: 500px;
     #wxlogin_container2{
       margin-top: 30px;
     }
