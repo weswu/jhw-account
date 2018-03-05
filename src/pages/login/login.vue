@@ -1,5 +1,5 @@
 <template>
-  <div :class="isMobile || scope === 'snsapi_login_quick'?'userAgent':''">
+  <div :class="isMobile?'userAgent':''">
     <div class="header">
       <div class="wapper">
         <img src="http://www.jihui88.com/member/static/images/logo2.jpg" alt="">
@@ -78,7 +78,7 @@
         </div>
       </div>
     </div>
-    <div class="alert" v-if="page === 'weixin' || page === 'qq'">
+    <div class="alert" v-if="(page === 'weixin' || page === 'qq') && scope !== 'snsapi_login_quick'">
       <div class="head">
         <span v-if="page === 'weixin'">微信</span><span v-if="page === 'qq'">QQ</span>登录<img src="http://www.jihui88.com/member/static/images/f-x.png" alt="" class="close" @click="page='init'">
       </div>
@@ -89,10 +89,10 @@
     </div>
     <!-- 微信 -->
     <div class="oAuth__content" v-if="page === 'weixin' && scope === 'snsapi_login_quick'">
-      <img src="http://www.jihui88.com/member/static/images/f-x.png" alt="" class="close" @click="page='init'">
       <div id="wxlogin_container2">
 <iframe src="https://open.weixin.qq.com/connect/qrconnect?appid=wx308c58370e47720c&amp;scope=snsapi_login&amp;redirect_uri=http%3A%2F%2Fwww.jihui88.com%2Frest%2Fapi%2Fuser%2Foauth&amp;state=vrdw2rh1q7jcd4z7mc930dksn39nd8uh_0_weixin&amp;login_type=jssdk&amp;self_redirect=default&amp;style=black" frameborder="0" scrolling="no" width="300px" height="400px"></iframe>
       </div>
+      <a @click="page='init'" href="javascript:;" class="back-other">返回其他登录</a>
     </div>
   </div>
 </template>
@@ -131,8 +131,8 @@ export default {
       },
       // qq
       qqUrl: '',
-      isMobile: false,
-      isAppMobile: false
+      isMobile: false, // 小于400的窗口
+      isAppMobile: false // 在手机上的窗口
     }
   },
   created () {
@@ -152,6 +152,9 @@ export default {
     // 注册来源
     this.model.domain = this.getUrlParam('domain')
 
+    if (this.scope === 'snsapi_login_quick'){
+      this.isMobile = true
+    }
     if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
       this.isMobile = true
       this.isAppMobile = true
@@ -560,14 +563,6 @@ export default {
       }
     }
 
-    .back-other{
-      color: #666666;
-      font-size: 12px;
-      position: absolute;
-      bottom: 17px;
-      width: 100px;
-      margin-left: -49px;
-    }
     .back-other:hover{
       text-decoration: underline;
     }
@@ -578,6 +573,14 @@ export default {
     right:11px;
     top:13px;
     cursor: pointer;
+  }
+  .back-other{
+    color: #666666;
+    font-size: 12px;
+    position: absolute;
+    bottom: 17px;
+    width: 100px;
+    margin-left: -49px;
   }
   // 登录
   .f-login{
@@ -730,10 +733,10 @@ export default {
     width: 100%;
     background: #fff;
     text-align: center;
-    min-height: 375px;
     z-index: 1000;
+    height: 485px;
     #wxlogin_container2{
-      margin-top: 40px;
+      margin-top: 30px;
     }
   }
 </style>
