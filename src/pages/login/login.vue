@@ -1,5 +1,5 @@
 <template>
-  <div :class="isMobile || dialog === '1'?'userAgent':''">
+  <div :class="isMobile || scope === 'snsapi_login_quick'?'userAgent':''">
     <div class="header">
       <div class="wapper">
         <img src="http://www.jihui88.com/member/static/images/logo2.jpg" alt="">
@@ -149,8 +149,6 @@ export default {
     this.addBind = this.getUrlParam('addBind')
     // 绑定类型
     this.bindType = this.getUrlParam('bindType')
-    // 弹出框
-    this.dialog = this.getUrlParam('dialog')
     // 注册来源
     this.model.domain = this.getUrlParam('domain')
 
@@ -350,7 +348,7 @@ export default {
         success: function(res) {
           if (res.success) {
             var id = 'wxlogin_container'
-            if (ctx.dialog === '1') {
+            if (ctx.scope === 'snsapi_login_quick') {
               id = 'wxlogin_container2'
             }
             new WxLogin({
@@ -386,7 +384,7 @@ export default {
           if (res.success) {
             var url = 'https://graph.qq.com/oauth/show?which=ConfirmPage&display=pc&client_id=101370473&response_type=code&state=' + res.attributes.data + '_' + ctx.model.type + '_qq' + "&scope=&display=&redirect_uri=" +
               encodeURIComponent("http://www.jihui88.com/rest/api/user/oauth?backURL=http://www.jihui88.com/member/qqRedirect.html")
-              if (ctx.dialog === '1') {
+              if (ctx.scope === 'snsapi_login_quick') {
                 window.location.href = url
               } else {
                 ctx.qqUrl = url
