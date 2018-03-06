@@ -9,7 +9,7 @@
       <div class="wapper">
         <div class="form">
           <img src="http://www.jihui88.com/member/static/images/f-logo.png" alt="" class="logo">
-          <div class="f-init" v-if="page ==='init' || page ==='weixin' || page ==='qq'">
+          <div class="f-init" v-if="page !=='login' && page !=='register' && page !=='mobile' && page !=='message' && page !== 'mobileLogin' && page !== 'bind'">
             <a @click="page='login'" href="javascript:;" class="f-btn">手机号／账号 登录</a>
             <a @click="page='register'" href="javascript:;" class="f-btn">注册</a>
             <div class="other">
@@ -57,13 +57,15 @@
             <button type="button" class="submit" @click="registerMobile"><span v-if="bindType ==='cellphone'">确定</span><span v-else-if="page ==='mobile'">登录</span><span v-else-if="page ==='register'">注册</span></button>
           </div>
           <!-- 手机验证 -->
-          <div class="f-message" v-if="page ==='message'||page ==='mobileLogin'">
+          <div class="f-message" v-if="page ==='message'||page ==='mobileLogin'||page ==='bind'">
             <div class="tip">
               为了安全，我们会向你的手机<br/>发送短信校验码
             </div>
             <div v-if="!isCode">
+              <input v-if="page ==='bind'" class="username" name="phone" v-model="p.phone" @keyup.enter="mobileSubmit" type="text" placeholder="请输入手机号" style="width: 228px;"/>
               <input class="randCode" type="text" name="randCode" v-model="model.randCode" @keyup.enter="mobileSubmit" placeholder="图片验证码">
               <img class="veriImg" :src="'http://www.jihui88.com/alphveriImg'+verifyPic"  @click="refreshCode" />
+              <span class="refresh-btn" @click="refreshCode" title="看不清？点击换一张"></span>
             </div>
             <div v-if="isCode">
               <input type="text" name="mobileCode" v-model="mobileCode" @keyup.enter="mobileSubmit" placeholder="短信验证码" >
@@ -71,7 +73,7 @@
             </div>
 
             <button type="button" class="submit" @click="getCode" v-if="!isCode">发送手机短信验证码</button>
-            <button type="button" class="submit" @click="mobileSubmit" v-if="isCode"><span v-if="bindType ==='cellphone'">确定</span><span v-else-if="page ==='mobileLogin'">登录</span><span v-else-if="page ==='message'">注册</span></button>
+            <button type="button" class="submit" @click="mobileSubmit" v-if="isCode"><span v-if="bindType ==='cellphone'">确定</span><span v-else-if="page ==='mobileLogin'">登录</span><span v-else-if="page ==='message'">注册</span><span v-else-if="page ==='bind'">绑定</span></button>
           </div>
 
           <a @click="page='init'" href="javascript:;" class="back-other" v-if="page !=='init' && page !== 'weixin' && page !== 'qq'">返回<span v-if="page ==='login'||page ==='mobile'||page ==='mobileLogin'">其他</span>登录</a>
@@ -257,6 +259,8 @@ export default {
     // 手机登录
     mobileSubmit () {
       var ctx = this
+      let test = /^1[3|4|5|7|8][0-9]\d{4,8}$/
+      if (!test.test(this.p.phone)) { return alert('不是有效的手机号码！') }
       if (this.mobileCode === '') {
         return alert('请填写短信验证码')
       }
@@ -281,6 +285,7 @@ export default {
               window.location.href=res.attributes.data
               return
             }
+            if (ctx.page === 'bind') {window.parent.postMessage({type: 1}, '*')}
             window.location.href = ctx.backURL ? ctx.backURL : ctx.model.redirectURL ? (ctx.model.redirectURL + (ctx.model.redirectURL.indexOf('?') > -1 ? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : 'http://www.jihui88.com/member/index.html'
           } else if (res && res.msg) {
             alert(res.msg)
@@ -669,6 +674,15 @@ export default {
       color: #666;
       text-align: center;
       padding-bottom: 10px;
+    }
+    .refresh-btn{
+      float: right;
+      margin-top: 16px;
+      height: 25px;
+      width: 16px;
+      cursor: pointer;
+      background: url(http://pc.jihui88.com/pc/styles/default/img/regVersion2016.png?v=201701061749) no-repeat -675px -650px;
+      padding-right: 6px;
     }
     input{
       border: 1px solid #d9d9d9;
