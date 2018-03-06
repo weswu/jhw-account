@@ -2,7 +2,7 @@
   <div :class="isMobile?'userAgent':''">
     <div class="header">
       <div class="wapper">
-        <a href="http://www.jihui88.com/member/login.html"><img src="http://www.jihui88.com/member/static/images/logo2.jpg" alt=""></a>
+        <a href="http://www.jihui88.com"><img src="http://www.jihui88.com/member/static/images/logo2.jpg" alt=""></a>
       </div>
     </div>
     <div class="content">
