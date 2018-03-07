@@ -90,7 +90,8 @@
     </div>
     <!-- 微信 -->
     <div class="oAuth__content" v-if="(page === 'weixin' || page === 'qq') && isMobile">
-      <iframe :src="qqUrl"></iframe>
+      <div id="wxlogin_container2" v-if="page === 'weixin'"></div>
+      <iframe v-if="page === 'qq'" :src="qqUrl"></iframe>
       <a @click="init" href="javascript:;" class="back-other">返回其他登录</a>
     </div>
   </div>
@@ -374,9 +375,20 @@ export default {
         },
         success: function(res) {
           if (res.success) {
-            ctx.qqUrl = "https://open.weixin.qq.com/connect/qrconnect?appid=wx308c58370e47720c&redirect_uri="+encodeURIComponent('http://www.jihui88.com/rest/api/user/oauth?backURL=http://www.jihui88.com/member/qqRedirect.html')+
-            "&response_type=code&scope=snsapi_login&state="+res.attributes.data + '_' + ctx.model.type + '_weixin'+"#wechat_redirect"
-
+            if (ctx.scope === 'snsapi_login_quick') {
+              new WxLogin({
+                id: 'wxlogin_container2',
+                appid: 'wx308c58370e47720c',
+                scope: 'snsapi_login',
+                redirect_uri: encodeURIComponent('http://www.jihui88.com/rest/api/user/oauth?backURL=http://www.jihui88.com/member/qqRedirect.html'),
+                state: res.attributes.data + '_' + ctx.model.type + '_weixin',
+                style: 'black',
+                href: ''
+              })
+            } else {
+              ctx.qqUrl = "https://open.weixin.qq.com/connect/qrconnect?appid=wx308c58370e47720c&redirect_uri="+encodeURIComponent('http://www.jihui88.com/rest/api/user/oauth?backURL=http://www.jihui88.com/member/qqRedirect.html')+
+              "&response_type=code&scope=snsapi_login&state="+res.attributes.data + '_' + ctx.model.type + '_weixin'+"#wechat_redirect"
+            }
           }
         }
       })
