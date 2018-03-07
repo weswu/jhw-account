@@ -61,7 +61,7 @@
             <div class="tip">
               为了安全，我们会向你的手机<br/>发送短信校验码
             </div>
-            <input v-if="bind" class="username" name="phone" v-model="p.phone" @keyup.enter="mobileSubmit" type="text" placeholder="请输入手机号" style="width: 228px;"/>
+            <input v-if="page === 'bind'" class="username" name="phone" v-model="p.phone" @keyup.enter="mobileSubmit" type="text" placeholder="请输入手机号" style="width: 228px;"/>
             <div v-if="!isCode">
               <input class="randCode" type="text" name="randCode" v-model="model.randCode" @keyup.enter="mobileSubmit" placeholder="图片验证码">
               <img class="veriImg" :src="'http://www.jihui88.com/alphveriImg'+verifyPic"  @click="refreshCode" />
@@ -73,10 +73,10 @@
             </div>
 
             <button type="button" class="submit" @click="getCode" v-if="!isCode">发送手机短信验证码</button>
-            <button type="button" class="submit" @click="mobileSubmit" v-if="isCode"><span v-if="bindType ==='cellphone'">确定</span><span v-else-if="page ==='mobileLogin'">登录</span><span v-else-if="page ==='message'">注册</span><span v-else-if="bind">绑定</span></button>
+            <button type="button" class="submit" @click="mobileSubmit" v-if="isCode"><span v-if="bindType ==='cellphone'">确定</span><span v-else-if="page ==='mobileLogin'">登录</span><span v-else-if="page ==='message'">注册</span><span v-else-if="page === 'bind'">绑定手机号</span></button>
           </div>
 
-          <a @click="page='init'" href="javascript:;" class="back-other" v-if="page !=='init' && page !== 'weixin' && page !== 'qq'">返回<span v-if="page ==='login'||page ==='mobile'||page ==='mobileLogin'">其他</span>登录</a>
+          <a @click="init" href="javascript:;" class="back-other" v-if="page !=='init' && page !== 'weixin' && page !== 'qq'">返回<span v-if="page ==='login'||page ==='mobile'||page ==='mobileLogin'">其他</span>登录</a>
         </div>
       </div>
     </div>
@@ -90,9 +90,10 @@
       </div>
     </div>
     <!-- 微信 -->
-    <div class="oAuth__content" v-if="page === 'weixin' && isMobile">
-      <div id="wxlogin_container2"></div>
-      <a @click="page='init'" href="javascript:;" class="back-other">返回其他登录</a>
+    <div class="oAuth__content" v-if="(page === 'weixin' || page === 'qq') && isMobile">
+      <div id="wxlogin_container2" v-if="page === 'weixin'"></div>
+      <iframe v-if="page === 'qq'" :src="qqUrl"></iframe>
+      <a @click="init" href="javascript:;" class="back-other">返回其他登录</a>
     </div>
   </div>
 </template>
@@ -117,7 +118,6 @@ export default {
       type: '',
       oauthtype: '',
       // 手机
-      bind: false,
       state: '',
       isCode: false,
       mobileCode: '',
@@ -158,10 +158,6 @@ export default {
     if (this.scope === 'snsapi_login_quick'){
       this.isMobile = true
     }
-    // 绑定
-    if (this.page === 'bind'){
-      this.bind = true
-    }
     if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
       this.isMobile = true
       this.isAppMobile = true
@@ -181,6 +177,9 @@ export default {
       var data = e.data || {}
       if (data.type === 1) {
         window.location.href = ctx.backURL ? ctx.backURL : ctx.model.redirectURL ? (ctx.model.redirectURL + (ctx.model.redirectURL.indexOf('?') > -1 ? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : 'http://www.jihui88.com/member/index.html'
+      }
+      if (data.type === 'bind') {
+        ctx.page = 'bind'
       }
     }, false)
     var ctx = this
@@ -290,7 +289,7 @@ export default {
               window.location.href=res.attributes.data
               return
             }
-            if (ctx.bind) {window.parent.postMessage({type: 1}, '*')}
+            if (ctx.page === 'bind') {window.parent.postMessage({type: 1}, '*')}
             window.location.href = ctx.backURL ? ctx.backURL : ctx.model.redirectURL ? (ctx.model.redirectURL + (ctx.model.redirectURL.indexOf('?') > -1 ? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : 'http://www.jihui88.com/member/index.html'
           } else if (res && res.msg) {
             alert(res.msg)
@@ -398,13 +397,9 @@ export default {
             var url = 'https://graph.qq.com/oauth/show?which=ConfirmPage&display=pc&client_id=101370473&response_type=code&state=' + res.attributes.data + '_' + ctx.model.type + '_qq' + "&scope=&display=&redirect_uri=" +
               encodeURIComponent("http://www.jihui88.com/rest/api/user/oauth?backURL=http://www.jihui88.com/member/qqRedirect.html")
               if (ctx.scope === 'snsapi_login_quick') {
-                window.location.href = url
-                window.parent.postMessage({
-                  type: 'qq'
-                }, '*')
-              } else {
-                ctx.qqUrl = url
+                window.parent.postMessage({type: 'qq'}, '*')
               }
+              ctx.qqUrl = url
           }
         }
       })
@@ -421,14 +416,14 @@ export default {
         }
       }
     },
-    setTime: function() {
+    setTime () {
       var ctx = this
       if (this.countdown == 0) {
         this.countText = '获取短信验证码'
         this.countdown = 60
         return false
       } else {
-        if (countdown < 10) {
+        if (this.countdown < 10) {
           this.countText = '00:0' + this.countdown
         } else {
           this.countText = '00:' + this.countdown
@@ -438,6 +433,10 @@ export default {
           ctx.setTime()
         },1000)
       }
+    },
+    init () {
+      this.page = 'init'
+      window.parent.postMessage({type: 'init'}, '*')
     }
   }
 }
@@ -756,6 +755,9 @@ export default {
     height: 500px;
     #wxlogin_container2{
       margin-top: 30px;
+    }
+    iframe{
+      width: 100%;height: 554px;border: none;
     }
   }
 </style>

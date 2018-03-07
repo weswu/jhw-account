@@ -3,249 +3,31 @@
 <head>
   <meta charset="utf-8">
   <title></title>
-  <meta name=viewport content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,minimal-ui">
-  <script src="http://libs.baidu.com/jquery/2.1.1/jquery.min.js"></script>
-  <style>
-
-  a{
-    text-decoration: none;
-  }
-  body{
-    margin: 0
-  }
-  .form{
-    width: 351px;
-    height: 501px;
-    box-sizing: border-box;
-    border-radius: 5px;
-    background: #fff;
-    margin: 0 auto;
-    margin-top: 50px;
-    text-align: center;
-    font-family: '微软雅黑';
-    position: relative;
-  }
-
-  .f-input{
-    width: 260px;
-    box-sizing: border-box;
-    border: 1px solid #d9d9d9;
-    border-radius: 5px;
-    margin: 0 auto;
-    position: relative;}
-
-    input{
-      border-radius: 5px;
-      border:none;
-      width:228px;
-      height: 17px;
-      padding: 10px 15px;
-      outline: 0 none;
-    }
-
-    .submit{
-      background: #7b7b7b;
-      border-radius: 5px;
-      border: 0 none;
-      cursor: pointer;
-      display: block;
-      width: 260px;
-      margin: 0 auto;
-      text-align: center;
-      height: 38px;
-      color: #fff;
-      font-size: 14px;
-      transition: all 0.3s ease 0s;
-      -moz-transition: all 0.3s ease 0s;
-      -webkit-transition: all 0.3s ease 0s;
-      -o-transition: all 0.3s ease 0s;
-      margin-top: 30px;
-    }
-    .submit:hover {
-    	background:#ff6700;
-    }
-
-    .veriImg{
-      position: absolute;
-      right: 14px;
-      margin-top: -31px;width: 65px;
-      cursor: pointer;
-    }
-    .phone{
-      border-bottom: 1px solid #d9d9d9;
-      border-bottom-right-radius: 0;
-      border-bottom-left-radius: 0;
-    }
-    .two{
-      display: none
-    }
-    .two .send{
-      position: absolute;
-      color: #666;
-      font-size: 12px;
-      right: 13px;
-      margin-top: -32px;
-      width: 104px;
-      height: 27px;
-      line-height: 28px;
-      padding: 0 15px;
-      border-radius: 2px;
-      text-align: center;
-    }
-    .active .one{
-      display: none
-    }
-    .active .two{
-      display: block
-    }
-  </style>
 </head>
 
 <body>
-  <div class="form">
-    <div class="f-input">
-      <input class="phone" name="phone" type="text" placeholder="手机号"/>
-      <div class="one">
-        <input class="randCode" type="text" name="randCode" placeholder="图片验证码">
-        <img class="veriImg" src="http://www.jihui88.com/alphveriImg"/>
-      </div>
-      <div class="two">
-        <input class="mobileCode" type="text" name="mobileCode" placeholder="短信验证码" >
-        <input class="send"  type="button" value="重新发送短信">
-      </div>
-    </div>
-
-    <button type="button" class="submit send one">发送手机短信验证码</button>
-    <button type="button" class="submit bind two">确定绑定手机号</button>
-  </div>
-
   <script type="text/javascript">
-  var state = ''
-  let dataJson = {
-    type: 1
-  }
-
-  function getUrlParam(name, url) {
-    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-    if (typeof url !== 'undefined')
-      url = url.substring(url.indexOf('?'), url.length);
-    var path = url || window.location.search;
-    var r = path.substr(1).match(reg);
-    if (r != null) return unescape(r[2]);
-    return null;
-  }
-
-  var addBind = getUrlParam("addBind");
-  var bindType = getUrlParam("bindType");
-  if (addBind && addBind === '1') {
-    $.ajax({
-      url: '/rest/api/user/oauth',
-      data: {
-        requestType: 'state', // 请求state(必填)
-        redirectURL: null,
-        scope: null,
-        appId: null,
-        addBind: addBind,
-        backURL: null,   // 登录成功后的跳转地址
-        quick: null,
-        domain: null
-      },
-      success: function(res) {
-        if (res && res.success) {
-          state = res.attributes.data + '_' + '0' + '_cellphone';
-        }
-      }
-    })
-  } else {
-    window.parent.postMessage(dataJson, '*')
-  }
-
-
-  $(function(){
-    var countdown = 60
-
-    window.setTime = function() {
-      var ctx = this
-      if (countdown == 0) {
-        $('.two .send').val('重新发送短信')
-        countdown = 60
-        return false
-      } else {
-        if (countdown < 10) {
-          $('.two .send').val('00:0' + countdown)
-        } else {
-          $('.two .send').val('00:' + countdown)
-        }
-        countdown --
-        setTimeout(function() {
-          window.setTime()
-        },1000)
-      }
+    let dataJson = {
+      type: 1
     }
 
+    function getUrlParam(name, url) {
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+      if (typeof url !== 'undefined')
+        url = url.substring(url.indexOf('?'), url.length);
+      var path = url || window.location.search;
+      var r = path.substr(1).match(reg);
+      if (r != null) return unescape(r[2]);
+      return null;
+    }
 
-    $('.veriImg').click(function(){
-      $(this).attr('src', 'http://www.jihui88.com/alphveriImg' + '?time=' + new Date().getTime())
-    })
-    $('.send').click(function(){
-      let test = /^1[3|4|5|7|8][0-9]\d{4,8}$/
-      if (!test.test($('.phone').val())) { return alert('不是有效的手机号码！') }
-      if ($('.randCode').val() === '') { return alert('请输入图片验证码') }
-
-      $.ajax({
-        type: 'post',
-        url: '/rest/api/user/sendCellphone',
-        data: {
-          cellphone: $('.phone').val(),   // 手机号码(必填)
-          state: state,    // 第一步里获取到的state参数(必填)
-          randCode: $('.randCode').val()  // 图像验证码(必填)
-        },
-        success: function(res){
-          if (res.success) {
-            $('.form').addClass('active')
-            window.setTime()
-          } else {
-            if (res.msg !== '请60秒后再刷新') {
-            } else {
-              $('.form').removeClass('active')
-              countdown = 60
-              $('.veriImg').attr('src', 'http://www.jihui88.com/alphveriImg' + '?time=' + new Date().getTime())
-            }
-            alert(res.msg)
-          }
-        }
-      });
-
-
-    })
-
-    $('.bind').click(function(){
-      if ($('.mobileCode').val() === '') { return alert('请输入图片验证码') }
-      $.ajax({
-        url: '/rest/api/user/oauth',
-        data: {
-          state: state,    // 第一步里获取到的state参数(必填)
-          code: $('.mobileCode').val(),    // 手机验证码(必填)
-          redirectURL: null,
-          scope: null,
-          quick: null,
-          addBind: addBind,
-          appId: null,
-          backURL: null,  // 登录成功后的跳转地址
-          domain: null
-        },
-        success: function(res) {
-          if (res && res.success) {
-            window.parent.postMessage(dataJson, '*')
-          } else if (res && res.msg) {
-            alert(res.msg)
-            $('.veriImg').attr('src', 'http://www.jihui88.com/alphveriImg' + '?time=' + new Date().getTime())
-          }
-        }
-      })
-    })
-
-  })
+    var addBind = getUrlParam("addBind");
+    var bindType = getUrlParam("bindType");
+    if (addBind && addBind === '1') {
+      window.parent.postMessage({type: 'bind'}, '*')
+    } else {
+      window.parent.postMessage(dataJson, '*')
+    }
 
   </script>
 </body>
