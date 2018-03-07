@@ -179,6 +179,7 @@ export default {
       }
       if (data.type === 'bind') {
         ctx.page = 'bind'
+        window.parent.postMessage({type: 'init'}, '*')
       }
     }, false)
     var ctx = this
