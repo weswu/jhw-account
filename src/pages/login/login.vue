@@ -380,7 +380,7 @@ export default {
                 id: 'wxlogin_container2',
                 appid: 'wx308c58370e47720c',
                 scope: 'snsapi_login',
-                redirect_uri: encodeURIComponent('http://www.jihui88.com/rest/api/user/oauth?backURL=http://www.jihui88.com/member/qqRedirect.html'),
+                redirect_uri: encodeURIComponent('http://www.jihui88.com/rest/api/user/oauth'),
                 state: res.attributes.data + '_' + ctx.model.type + '_weixin',
                 style: 'black',
                 href: ''
