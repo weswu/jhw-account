@@ -80,19 +80,17 @@
         </div>
       </div>
     </div>
-    <div class="alert" v-if="(page === 'weixin' || page === 'qq') && !isMobile">
+    <div class="alert" v-if="(page === 'weixin' || page === 'qq') && !isMobile" v-drag>
       <div class="head">
         <span v-if="page === 'weixin'">微信</span><span v-if="page === 'qq'">QQ</span>登录<img src="http://www.jihui88.com/member/static/images/f-x.png" alt="" class="close" @click="page='init'">
       </div>
       <div class="container">
-        <div id="wxlogin_container" v-if="page === 'weixin'"></div>
-        <iframe v-if="page === 'qq'" :src="qqUrl"></iframe>
+        <iframe :src="qqUrl"></iframe>
       </div>
     </div>
     <!-- 微信 -->
     <div class="oAuth__content" v-if="(page === 'weixin' || page === 'qq') && isMobile">
-      <div id="wxlogin_container2" v-if="page === 'weixin'"></div>
-      <iframe v-if="page === 'qq'" :src="qqUrl"></iframe>
+      <iframe :src="qqUrl"></iframe>
       <a @click="init" href="javascript:;" class="back-other">返回其他登录</a>
     </div>
   </div>
@@ -191,6 +189,23 @@ export default {
           ctx.isMobile = false
         }
       })()
+    }
+  },
+  directives: {
+    drag: {
+      inserted (el, bindings) {
+        el.onmousedown = function(e){
+          var disx = e.pageX - el.offsetLeft;
+          var disy = e.pageY - el.offsetTop;
+          document.onmousemove = function (e){
+            el.style.left = e.pageX - disx + 400 +'px';
+            el.style.top = e.pageY - disy + 300 +'px';
+          }
+          document.onmouseup = function(){
+            document.onmousemove = document.onmouseup = null;
+          }
+        }
+      }
     }
   },
   methods: {
@@ -359,19 +374,9 @@ export default {
         },
         success: function(res) {
           if (res.success) {
-            var id = 'wxlogin_container'
-            if (ctx.scope === 'snsapi_login_quick') {
-              id = 'wxlogin_container2'
-            }
-            new WxLogin({
-              id: id,
-              appid: 'wx308c58370e47720c',
-              scope: 'snsapi_login',
-              redirect_uri: encodeURIComponent('http://www.jihui88.com/rest/api/user/oauth?backURL=http://www.jihui88.com/member/qqRedirect.html'),
-              state: res.attributes.data + '_' + ctx.model.type + '_weixin',
-              style: 'black',
-              href: ''
-            })
+            ctx.qqUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx308c58370e47720c&redirect_uri"+encodeURIComponent('http://www.jihui88.com/rest/api/user/oauth?backURL=http://www.jihui88.com/member/qqRedirect.html')+
+            "&response_type=code&scope=snsapi_login&state="+res.attributes.data + '_' + ctx.model.type + '_weixin'+"#wechat_redirect"
+
           }
         }
       })
@@ -714,8 +719,8 @@ export default {
   .alert {
     width: 800px;
     height: 600px;
+    position: absolute;
     margin: -300px 0 0 -400px;
-    position: fixed;
     left: 50%;
     top: 50%;
     background: #fafafa;
