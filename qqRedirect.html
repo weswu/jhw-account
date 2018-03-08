@@ -7,11 +7,9 @@
 
 <body>
   <script type="text/javascript">
-    debugger
     let dataJson = {
       type: 1
     }
-
     function getUrlParam(name, url) {
       var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
       if (typeof url !== 'undefined')
@@ -24,10 +22,22 @@
 
     var addBind = getUrlParam("addBind");
     var bindType = getUrlParam("bindType");
+    var backURL = getUrlParam("backURL");
+
     if (addBind && addBind === '1') {
       window.parent.postMessage({type: 'bind'}, '*')
     } else {
       window.parent.postMessage(dataJson, '*')
+    }
+
+    // 如果当前页面不在iframe内， 则跳转到相应页面
+    if (window.parent === this){
+      if (addBind && addBind === '1'){
+        window.location.href="http://www.jihui88.com/member/login.html?addBind=1&bindType=" + bindType + "&backURL=" + backURL + "&page=bind";
+      }else{
+        window.location.href = backURL;
+      }
+
     }
 
   </script>
