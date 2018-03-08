@@ -137,22 +137,29 @@ export default {
   },
   created () {
     this.openid = this.getUrlParam('openid') || ''
+    // 登录账号类型， 0为企业账号登录，1为员工账号登录
     this.type = this.getUrlParam('type') || ''
+    // 授权类型
     this.oauthtype = this.getUrlParam('oauthtype') || ''
     // 后端控制的重定向（用于授权登录），前端无需关注
     this.model.redirectURL = this.getUrlParam('redirectURL') || ''
-    // 前端控制的返回页面
+    // 前端控制的返回页面, 从哪个子项目里进来的授权成功后将返回到backURL
     this.backURL = this.getUrlParam('backURL') ? (this.getUrlParam('backURL') + (location.hash ? location.hash : '')) : null
+    // 系统控制的授权返回地址
+    this.oauthBackURL = this.getUrlParam('oauthBackURL') || 'http://www.jihui88.com/member/qqRedirect.html'
+    // 授权类型范围， 比如snsapi_login_pc   网页端授权， snsapi_login_quick  弹出框形式授权
     this.scope = this.getUrlParam('scope') ? this.getUrlParam('scope') : null
+    // 系统分配
     this.appId = this.getUrlParam('appId')
     // 为某账号绑定第三方
     this.addBind = this.getUrlParam('addBind')
-    // 绑定类型
+    // 绑定类型， 手机绑定为cellphone, 微信绑定为weixin ， QQ绑定为qq
     this.bindType = this.getUrlParam('bindType')
     // 注册来源
     this.model.domain = this.getUrlParam('domain')
-    // 注册
+    // 显示页面
     this.page = this.getUrlParam('page') || 'init'
+
 
     if (this.scope === 'snsapi_login_quick'){
       this.isMobile = true
@@ -161,6 +168,12 @@ export default {
       this.isMobile = true
       this.isAppMobile = true
     }
+
+    // 解决后端请求不到带有#/hash的网址的相关参数问题
+    if (this.backURL){
+      this.backURL = this.backURL.replace('#', '@**@')
+    }
+
   },
   mounted: function () {
     this.$nextTick(function () {
@@ -175,7 +188,7 @@ export default {
     window.addEventListener('message', function (e) {
       var data = e.data || {}
       if (data.type === 1) {
-        window.location.href = ctx.backURL ? ctx.backURL : ctx.model.redirectURL ? (ctx.model.redirectURL + (ctx.model.redirectURL.indexOf('?') > -1 ? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : 'http://www.jihui88.com/member/index.html'
+        window.location.href = ctx.backURL ? ctx.backURL.replace('@**@', '#') : ctx.model.redirectURL ? (ctx.model.redirectURL + (ctx.model.redirectURL.indexOf('?') > -1 ? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : 'http://www.jihui88.com/member/index.html'
       }
       if (data.type === 'bind') {
         ctx.page = 'bind'
@@ -307,7 +320,7 @@ export default {
               return
             }
             if (ctx.page === 'bind') {window.parent.postMessage({type: 1}, '*')}
-            window.location.href = ctx.backURL ? ctx.backURL : ctx.model.redirectURL ? (ctx.model.redirectURL + (ctx.model.redirectURL.indexOf('?') > -1 ? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : 'http://www.jihui88.com/member/index.html'
+            window.location.href = ctx.backURL ? ctx.backURL.replace('@**@', '#') : ctx.model.redirectURL ? (ctx.model.redirectURL + (ctx.model.redirectURL.indexOf('?') > -1 ? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : 'http://www.jihui88.com/member/index.html'
           } else if (res && res.msg) {
             alert(res.msg)
             ctx.refreshCode()
@@ -342,7 +355,7 @@ export default {
         success: function(res) {
           if (res.success) {
             // 判断是否存在backURL? [说明是普通跳转] : [是否存在redirectUrl? 是[[说明是授权登录，需要跳转到redirectURL地址，并带上code与state参数]] : 否 [[跳转到用户后台首页]] ]
-            window.location.href =ctx.backURL? ctx.backURL : ctx.model.redirectURL? (ctx.model.redirectURL+(ctx.model.redirectURL.indexOf('?') > -1? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : "http://www.jihui88.com/member/index.html"
+            window.location.href =ctx.backURL? ctx.backURL.replace('@**@', '#') : ctx.model.redirectURL? (ctx.model.redirectURL+(ctx.model.redirectURL.indexOf('?') > -1? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : "http://www.jihui88.com/member/index.html"
           } else{
             alert(res.msg)
             ctx.refreshCode()
@@ -387,7 +400,7 @@ export default {
                 href: ''
               })
             } else {
-              ctx.qqUrl = "https://open.weixin.qq.com/connect/qrconnect?appid=wx308c58370e47720c&redirect_uri="+encodeURIComponent('http://www.jihui88.com/rest/api/user/oauth?backURL=http://www.jihui88.com/member/qqRedirect.html')+
+              ctx.qqUrl = "https://open.weixin.qq.com/connect/qrconnect?appid=wx308c58370e47720c&redirect_uri="+encodeURIComponent('http://www.jihui88.com/rest/api/user/oauth?backURL=' + ctx.backURL + '&oauthBackURL=' + ctx.oauthBackURL)+
               "&response_type=code&scope=snsapi_login&state="+res.attributes.data + '_' + ctx.model.type + '_weixin'+"#wechat_redirect"
             }
           }
@@ -413,7 +426,7 @@ export default {
         success: function(res) {
           if (res.success) {
             var url = 'https://graph.qq.com/oauth/show?which=ConfirmPage&display=pc&client_id=101370473&response_type=code&state=' + res.attributes.data + '_' + ctx.model.type + '_qq' + "&scope=&display=&redirect_uri=" +
-              encodeURIComponent("http://www.jihui88.com/rest/api/user/oauth?backURL=http://www.jihui88.com/member/qqRedirect.html")
+              encodeURIComponent("http://www.jihui88.com/rest/api/user/oauth?backURL=" + ctx.backURL + "&oauthBackURL=" + ctx.oauthBackURL)
               if (ctx.scope === 'snsapi_login_quick') {
                 window.parent.postMessage({type: 'qq'}, '*')
               }
