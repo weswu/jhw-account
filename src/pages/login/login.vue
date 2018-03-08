@@ -169,7 +169,7 @@ export default {
       } else if (this.bindType === 'qq') {
         this.qqLogin()
       } else if (this.bindType === 'cellphone') {
-        this.page = 'mobile'
+        this.page = 'bind'
       }
     })
     window.addEventListener('message', function (e) {
