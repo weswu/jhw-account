@@ -319,7 +319,6 @@ export default {
               window.location.href=res.attributes.data
               return
             }
-            if (ctx.page === 'bind') {window.parent.postMessage({type: 1}, '*')}
             window.location.href = ctx.backURL ? ctx.backURL.replace('@**@', '#') : ctx.model.redirectURL ? (ctx.model.redirectURL + (ctx.model.redirectURL.indexOf('?') > -1 ? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : 'http://www.jihui88.com/member/index.html'
           } else if (res && res.msg) {
             alert(res.msg)
