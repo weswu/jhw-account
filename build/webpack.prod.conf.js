@@ -20,7 +20,7 @@ plugins = [
     compress: {
       warnings: false
     },
-    sourceMap: true
+    sourceMap: false
   }),
   new CleanPlugin(['../dist']), //清空生成目录
   // extract css into its own file

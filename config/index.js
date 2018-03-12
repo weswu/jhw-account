@@ -6,7 +6,7 @@ var build = {
   assetsRoot: path.resolve(__dirname, '../dist'),
   assetsSubDirectory: 'static',
   assetsPublicPath: './',
-  productionSourceMap: false,
+  productionSourceMap: true,
   productionGzip: false,
   productionGzipExtensions: ['js', 'css']
 }
