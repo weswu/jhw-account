@@ -181,7 +181,7 @@ export default {
         this.wxLogin()
       } else if (this.bindType === 'qq') {
         this.qqLogin()
-      } else if (this.bindType === 'cellphone') {
+      } else if (this.bindType === 'cellphone' && this.page !== 'mobile') {
         this.page = 'bind'
       }
     })
