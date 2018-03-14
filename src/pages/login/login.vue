@@ -73,7 +73,11 @@
             </div>
 
             <button type="button" class="submit" @click="getCode" v-if="!isCode" :style="model.randCode.length>3?'background: #ff6700;':''">发送手机短信验证码</button>
-            <button type="button" class="submit" @click="mobileSubmit" v-if="isCode" :style="mobileCode.length>5?'background: #ff6700;':''"><span v-if="bindType ==='cellphone'">确定</span><span v-else-if="page ==='mobileLogin'">登录</span><span v-else-if="page ==='message'">注册</span><span v-else-if="page === 'bind'">绑定手机号</span></button>
+            <button type="button" class="submit" @click="mobileSubmit" v-if="isCode" :style="mobileCode.length>5?'background: #ff6700;':''">
+              <span v-if="bindType ==='cellphone'">确定</span>
+              <span v-else-if="page ==='mobileLogin'||page === 'bind'">登录</span>
+              <span v-else-if="page ==='message'">注册</span>
+            </button>
           </div>
 
           <a @click="init" href="javascript:;" class="back-other" v-if="page !=='init' && page !== 'weixin' && page !== 'qq'">返回<span v-if="page ==='login'||page ==='mobile'||page ==='mobileLogin'">其他</span>登录</a>
@@ -118,7 +122,7 @@ export default {
       oauthtype: '',
       // 手机
       state: '',
-      isCode: false,
+      isCode: true,
       mobileCode: '',
       backURL: '',
       countdown: 60,
@@ -733,7 +737,7 @@ export default {
     }
     .mobileCode{
       height: 36px;
-      float: right;width: 120px;
+      float: right;width: 120px;cursor: pointer;
     }
     .submit{
       margin-top: 15px;
