@@ -68,12 +68,12 @@
               <span class="refresh-btn" @click="refreshCode" title="看不清？点击换一张"></span>
             </div>
             <div v-if="isCode">
-              <input type="text" name="mobileCode" v-model="mobileCode" @keyup.enter="mobileSubmit" placeholder="短信验证码" >
+              <input type="text" name="mobileCode" v-model="mobileCode" @keyup.enter="mobileSubmit" placeholder="短信验证码">
               <input class="mobileCode" @click="getCode" type="button" :value="countText">
             </div>
 
-            <button type="button" class="submit" @click="getCode" v-if="!isCode">发送手机短信验证码</button>
-            <button type="button" class="submit" @click="mobileSubmit" v-if="isCode"><span v-if="bindType ==='cellphone'">确定</span><span v-else-if="page ==='mobileLogin'">登录</span><span v-else-if="page ==='message'">注册</span><span v-else-if="page === 'bind'">绑定手机号</span></button>
+            <button type="button" class="submit" @click="getCode" v-if="!isCode" :style="model.randCode.length>3?'background: #ff6700;':''">发送手机短信验证码</button>
+            <button type="button" class="submit" @click="mobileSubmit" v-if="isCode" :style="mobileCode.length>5?'background: #ff6700;':''"><span v-if="bindType ==='cellphone'">确定</span><span v-else-if="page ==='mobileLogin'">登录</span><span v-else-if="page ==='message'">注册</span><span v-else-if="page === 'bind'">绑定手机号</span></button>
           </div>
 
           <a @click="init" href="javascript:;" class="back-other" v-if="page !=='init' && page !== 'weixin' && page !== 'qq'">返回<span v-if="page ==='login'||page ==='mobile'||page ==='mobileLogin'">其他</span>登录</a>
