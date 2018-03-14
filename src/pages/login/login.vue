@@ -122,7 +122,7 @@ export default {
       oauthtype: '',
       // 手机
       state: '',
-      isCode: true,
+      isCode: false,
       mobileCode: '',
       backURL: '',
       countdown: 60,
@@ -180,6 +180,7 @@ export default {
 
   },
   mounted: function () {
+    var ctx = this
     this.$nextTick(function () {
       if (this.bindType === 'weixin') {
         this.wxLogin()
@@ -199,7 +200,6 @@ export default {
         window.parent.postMessage({type: 'init'}, '*')
       }
     }, false)
-    var ctx = this
     window.onresize = () => {
       return (() => {
         if (document.body.clientWidth < 400 || ctx.scope === 'snsapi_login_quick') {
@@ -737,7 +737,9 @@ export default {
     }
     .mobileCode{
       height: 36px;
-      float: right;width: 120px;cursor: pointer;
+      float: right;width: 120px;cursor: pointer;background: #dedede;
+      font-size: 12px;
+      color: #666;
     }
     .submit{
       margin-top: 15px;
