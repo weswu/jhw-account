@@ -363,7 +363,7 @@ export default {
         }
       })
     },
-    pcLogin(skey, callback) {
+    pcLogin (skey, callback) {
       var url = "http://pc.jihui88.com/pc/skey.html?skey=" + skey;
       var $iframe = $('<iframe src=""></iframe>')
       $('body').append($iframe)
@@ -373,7 +373,8 @@ export default {
     // 微信登录
     wxLogin () {
       var ctx = this
-      this.page = 'weixin'
+      // this.page = 'weixin'
+      var newTab = window.open('about:blank');
       $.ajax({
         url: '/rest/api/user/oauth',
         data: {
@@ -388,7 +389,11 @@ export default {
         },
         success: function(res) {
           if (res.success) {
-            if (ctx.scope === 'snsapi_login_quick') {
+            var url = "https://open.weixin.qq.com/connect/qrconnect?appid=wx308c58370e47720c&redirect_uri="+encodeURIComponent('http://www.jihui88.com/rest/api/user/oauth?backURL=' + ctx.backURL + '&oauthBackURL=' + ctx.oauthBackURL)+
+              "&response_type=code&scope=snsapi_login&state="+res.attributes.data + '_' + ctx.model.type + '_weixin'+"#wechat_redirect"
+             // window.open(url,'newwindow','height=600,width=1000,top=0,left=0,toolbar=no,menubar=no,scrollbars=no, resizable=no,location=no, status=no')
+           newTab.location.href = url;
+            if (ctx.scope === 'snsapi_login_quick' && false) {
               new WxLogin({
                 id: 'wxlogin_container2',
                 appid: 'wx308c58370e47720c',
@@ -398,16 +403,13 @@ export default {
                 style: 'black',
                 href: ''
               })
-            } else {
-              ctx.qqUrl = "https://open.weixin.qq.com/connect/qrconnect?appid=wx308c58370e47720c&redirect_uri="+encodeURIComponent('http://www.jihui88.com/rest/api/user/oauth?backURL=' + ctx.backURL + '&oauthBackURL=' + ctx.oauthBackURL)+
-              "&response_type=code&scope=snsapi_login&state="+res.attributes.data + '_' + ctx.model.type + '_weixin'+"#wechat_redirect"
             }
           }
         }
       })
     },
     // qq登录
-    qqLogin: function() {
+    qqLogin () {
       var ctx = this;
       this.page = 'qq'
       $.ajax({

@@ -7,9 +7,6 @@
 
 <body>
   <script type="text/javascript">
-    let dataJson = {
-      type: 1
-    }
     function getUrlParam(name, url) {
       var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
       if (typeof url !== 'undefined')
@@ -23,13 +20,12 @@
     var addBind = getUrlParam("addBind");
     var bindType = getUrlParam("bindType");
     var backURL = getUrlParam('backURL') ? (getUrlParam('backURL') + (location.hash ? location.hash : '')) : null;
-
+    debugger
     if (addBind && addBind === '1') {
       window.parent.postMessage({type: 'bind'}, '*')
     } else {
-      window.parent.postMessage(dataJson, '*')
+      window.parent.postMessage({type: 1}, '*')
     }
-
     // 如果当前页面不在iframe内， 则跳转到相应页面
     if (window.parent === this){
       if (addBind && addBind === '1'){
@@ -37,10 +33,16 @@
       }else{
         window.location.href = backURL;
       }
-
     }
-
+    if(window.opener){//判断是否有父窗口,即打开本页面的窗口
+      debugger
+      if (addBind && addBind === '1') {
+        window.opener.postMessage({type: 'bind'}, '*')
+      } else {
+        window.opener.postMessage({type: 1}, '*')
+      }
+      window.close();  //关闭窗口
+    }
   </script>
 </body>
-
 </html>
