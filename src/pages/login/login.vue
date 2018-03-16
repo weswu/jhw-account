@@ -74,13 +74,13 @@
 
             <button type="button" class="submit" @click="getCode" v-if="!isCode" :style="model.randCode.length>3?'background: #ff6700;':''">发送手机短信验证码</button>
             <button type="button" class="submit" @click="mobileSubmit" v-if="isCode" :style="mobileCode.length>5?'background: #ff6700;':''">
-              <span v-if="bindType ==='cellphone'">确定</span>
+              <span v-if="bindType ==='cellphone'">确定<span v-if="isAccount">绑定</span></span>
               <span v-else-if="page ==='mobileLogin'||page === 'bind'">登录</span>
               <span v-else-if="page ==='message'">注册</span>
             </button>
           </div>
 
-          <a @click="init" href="javascript:;" class="back-other" v-if="page !=='init' && page !== 'weixin' && page !== 'qq'">返回<span v-if="page ==='login'||page ==='mobile'||page ==='mobileLogin'">其他</span>登录</a>
+          <a @click="init" href="javascript:;" class="back-other" v-if="page !=='init' && page !== 'weixin' && page !== 'qq' && !isAccount">返回<span v-if="page ==='login'||page ==='mobile'||page ==='mobileLogin'">其他</span>登录</a>
         </div>
       </div>
     </div>
@@ -95,7 +95,7 @@
     <!-- 微信 -->
     <div class="oAuth__content" v-if="page === 'qq' && isMobile">
       <iframe v-if="page === 'qq'" :src="qqUrl"></iframe>
-      <a @click="init" href="javascript:;" class="back-other">返回其他登录</a>
+      <a @click="init" href="javascript:;" class="back-other" v-if="!isAccount">返回其他登录</a>
     </div>
   </div>
 </template>
@@ -134,6 +134,7 @@ export default {
       },
       // qq
       qqUrl: '',
+      isAccount: false,
       isMobile: false, // 小于400的窗口
       isAppMobile: false // 在手机上的窗口
     }
@@ -171,12 +172,14 @@ export default {
       this.isMobile = true
       this.isAppMobile = true
     }
-
+    // 重新绑定
+    if (this.getUrlParam('isAccount') === '1') {
+      this.isAccount = true
+    }
     // 解决后端请求不到带有#/hash的网址的相关参数问题
     if (this.backURL){
       this.backURL = this.backURL.replace('#', '@**@')
     }
-
   },
   mounted: function () {
     var ctx = this
@@ -229,16 +232,35 @@ export default {
   methods: {
     // 1.手机注册
     registerMobile () {
+      var ctx = this
       let test = /^1[3|4|5|7|8][0-9]\d{4,8}$/
       if (!test.test(this.p.phone)) { return alert('不是有效的手机号码！') }
       if (this.page === 'register'){
         if (this.p.password.length < 6) { return alert('登录密码，不少于6位！') }
-        this.page = 'message'
+        // 判断手机是否注册过
+        $.ajax({
+          url: '/rest/api/user/validate',
+          data: {
+            'vali-username': this.p.phone
+          },
+          success: function(res) {
+            if (res.success) {
+              ctx.page = 'message'
+              ctx.mobile()
+            } else {
+              if(res.msg === '该用户已经存在'){
+                alert('该手机号已经注册')
+              } else {
+                alert(res.msg)
+              }
+            }
+          }
+        })
       } else {
         this.page = 'mobileLogin'
+        this.mobile()
       }
       this.model.randCode = ''
-      this.mobile()
     },
     // 切换到手机，获取state
     mobile () {
