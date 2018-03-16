@@ -84,17 +84,16 @@
         </div>
       </div>
     </div>
-    <div class="alert" v-if="(page === 'weixin' || page === 'qq') && !isMobile" v-drag>
+    <div class="alert" v-if="page === 'qq' && !isMobile" v-drag>
       <div class="head">
-        <span v-if="page === 'weixin'">微信</span><span v-if="page === 'qq'">QQ</span>登录<img src="http://www.jihui88.com/member/static/images/f-x.png" alt="" class="close" @click="page='init'">
+        <span>QQ</span>登录<img src="http://www.jihui88.com/member/static/images/f-x.png" alt="" class="close" @click="page='init'">
       </div>
       <div class="container">
         <iframe :src="qqUrl"></iframe>
       </div>
     </div>
     <!-- 微信 -->
-    <div class="oAuth__content" v-if="(page === 'weixin' || page === 'qq') && isMobile">
-      <div id="wxlogin_container2" v-if="page === 'weixin'"></div>
+    <div class="oAuth__content" v-if="page === 'qq' && isMobile">
       <iframe v-if="page === 'qq'" :src="qqUrl"></iframe>
       <a @click="init" href="javascript:;" class="back-other">返回其他登录</a>
     </div>
@@ -377,7 +376,6 @@ export default {
     // 微信登录
     wxLogin () {
       var ctx = this
-      // this.page = 'weixin'
       var newTab = window.open('about:blank');
       $.ajax({
         url: '/rest/api/user/oauth',
@@ -395,19 +393,7 @@ export default {
           if (res.success) {
             var url = "https://open.weixin.qq.com/connect/qrconnect?appid=wx308c58370e47720c&redirect_uri="+encodeURIComponent('http://www.jihui88.com/rest/api/user/oauth?backURL=' + ctx.backURL + '&oauthBackURL=' + ctx.oauthBackURL)+
               "&response_type=code&scope=snsapi_login&state="+res.attributes.data + '_' + ctx.model.type + '_weixin'+"#wechat_redirect"
-             // window.open(url,'newwindow','height=600,width=1000,top=0,left=0,toolbar=no,menubar=no,scrollbars=no, resizable=no,location=no, status=no')
-           newTab.location.href = url;
-            if (ctx.scope === 'snsapi_login_quick' && false) {
-              new WxLogin({
-                id: 'wxlogin_container2',
-                appid: 'wx308c58370e47720c',
-                scope: 'snsapi_login',
-                redirect_uri: encodeURIComponent('http://www.jihui88.com/rest/api/user/oauth'),
-                state: res.attributes.data + '_' + ctx.model.type + '_weixin',
-                style: 'black',
-                href: ''
-              })
-            }
+            newTab.location.href = url;
           }
         }
       })
