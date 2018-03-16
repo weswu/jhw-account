@@ -195,7 +195,7 @@ export default {
         this.page = 'bind'
       }
       if (this.p.phone.length > 6) {
-        this.mobile()
+        this.isUseAccout()
       }
     })
     window.addEventListener('message', function (e) {
@@ -244,29 +244,34 @@ export default {
       if (this.page === 'register'){
         if (this.p.password.length < 6) { return alert('登录密码，不少于6位！') }
         // 判断手机是否注册过
-        $.ajax({
-          url: '/rest/api/user/validate',
-          data: {
-            'vali-username': this.p.phone
-          },
-          success: function(res) {
-            if (res.success) {
-              ctx.page = 'message'
-              ctx.mobile()
-            } else {
-              if(res.msg === '该用户已经存在'){
-                alert('该手机号已经注册')
-              } else {
-                alert(res.msg)
-              }
-            }
-          }
-        })
+        this.isUseAccout()
       } else {
         this.page = 'mobileLogin'
         this.mobile()
       }
       this.model.randCode = ''
+    },
+    isUseAccout () {
+      var ctx = this
+      $.ajax({
+        url: '/rest/api/user/validate',
+        data: {
+          'vali-username': this.p.phone
+        },
+        success: function(res) {
+          if (res.success) {
+            ctx.page = 'message'
+            ctx.mobile()
+          } else {
+            ctx.page = 'register'
+            if(res.msg === '该用户已经存在'){
+              alert('该手机号已经注册')
+            } else {
+              alert(res.msg)
+            }
+          }
+        }
+      })
     },
     // 切换到手机，获取state
     mobile () {
@@ -404,7 +409,7 @@ export default {
     // 微信登录
     wxLogin () {
       var ctx = this
-      ctx.newTab = window.open('about:blank');
+      var newTab = window.open('about:blank');
       $.ajax({
         url: '/rest/api/user/oauth',
         data: {
@@ -421,7 +426,11 @@ export default {
           if (res.success) {
             var url = "https://open.weixin.qq.com/connect/qrconnect?appid=wx308c58370e47720c&redirect_uri="+encodeURIComponent('http://www.jihui88.com/rest/api/user/oauth?backURL=' + ctx.backURL + '&oauthBackURL=' + ctx.oauthBackURL)+
               "&response_type=code&scope=snsapi_login&state="+res.attributes.data + '_' + ctx.model.type + '_weixin'+"#wechat_redirect"
-            ctx.newTab.location.href = url;
+            if (newTab) {
+              ctx.newTab.location.href = url;
+            } else {
+              window.open(url,'newwindow','height=600,width=1000,top=0,left=0,toolbar=no,menubar=no,scrollbars=no, resizable=no,location=no, status=no')
+            }
           }
         }
       })
