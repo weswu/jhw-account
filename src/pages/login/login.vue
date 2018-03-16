@@ -194,6 +194,9 @@ export default {
       } else if (this.bindType === 'cellphone' && this.page !== 'mobile') {
         this.page = 'bind'
       }
+      if (this.p.phone.length > 6) {
+        this.mobile()
+      }
     })
     window.addEventListener('message', function (e) {
       var data = e.data || {}
