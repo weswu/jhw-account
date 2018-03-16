@@ -6,6 +6,7 @@
 </head>
 
 <body>
+  <div style="text-align: center;padding: 30px 0;font-size: 14px;">登录成功</div>
   <script type="text/javascript">
     function getUrlParam(name, url) {
       var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
@@ -19,29 +20,22 @@
 
     var addBind = getUrlParam("addBind");
     var bindType = getUrlParam("bindType");
-    var backURL = getUrlParam('backURL') ? (getUrlParam('backURL') + (location.hash ? location.hash : '')) : null;
-    debugger
-    if (addBind && addBind === '1') {
-      window.parent.postMessage({type: 'bind'}, '*')
-    } else {
-      window.parent.postMessage({type: 1}, '*')
-    }
-    // 如果当前页面不在iframe内， 则跳转到相应页面
-    if (window.parent === this){
-      if (addBind && addBind === '1'){
-        window.location.href="http://www.jihui88.com/member/login.html?addBind=1&bindType=" + bindType + "&page=bind" + "&backURL=" + backURL;
-      }else{
-        window.location.href = backURL;
-      }
-    }
+
     if(window.opener){//判断是否有父窗口,即打开本页面的窗口
       debugger
       if (addBind && addBind === '1') {
         window.opener.postMessage({type: 'bind'}, '*')
       } else {
-        window.opener.postMessage({type: 1}, '*')
+        top.postMessage({type: 1}, '*')
       }
       window.close();  //关闭窗口
+    } else {
+      debugger
+      if (addBind && addBind === '1') {
+        window.parent.postMessage({type: 'bind'}, '*')
+      } else {
+        top.postMessage({type: 1}, '*')
+      }
     }
   </script>
 </body>
