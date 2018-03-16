@@ -163,6 +163,9 @@ export default {
     this.model.domain = this.getUrlParam('domain')
     // 显示页面
     this.page = this.getUrlParam('page') || 'init'
+    // 注册
+    this.p.phone = this.getUrlParam('phone') || ''
+    this.p.password = this.getUrlParam('password') || ''
 
 
     if (this.scope === 'snsapi_login_quick'){
