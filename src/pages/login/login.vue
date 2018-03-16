@@ -398,7 +398,7 @@ export default {
     // 微信登录
     wxLogin () {
       var ctx = this
-      var newTab = window.open('about:blank');
+      ctx.newTab = window.open('about:blank');
       $.ajax({
         url: '/rest/api/user/oauth',
         data: {
@@ -415,7 +415,7 @@ export default {
           if (res.success) {
             var url = "https://open.weixin.qq.com/connect/qrconnect?appid=wx308c58370e47720c&redirect_uri="+encodeURIComponent('http://www.jihui88.com/rest/api/user/oauth?backURL=' + ctx.backURL + '&oauthBackURL=' + ctx.oauthBackURL)+
               "&response_type=code&scope=snsapi_login&state="+res.attributes.data + '_' + ctx.model.type + '_weixin'+"#wechat_redirect"
-            newTab.location.href = url;
+            ctx.newTab.location.href = url;
           }
         }
       })
