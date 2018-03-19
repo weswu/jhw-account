@@ -51,7 +51,8 @@
           <!-- 手机登录 -->
           <div class="f-register" v-if="page ==='register'||page ==='mobile'">
             <div class="f-input">
-              <input :class="page==='register'?'username':''" name="phone" v-model="p.phone" @keyup.enter="registerMobile" type="text" placeholder="手机号"/>
+              <input :class="page==='register'?'username':''" name="phone" v-model="p.phone" @keyup.enter="registerMobile" type="text" placeholder="手机号" @change="isUseAccout"/>
+              <span class="forget-password" style="color: red"  v-if="page ==='register'&&validate">该手机号已注册</span>
               <input class="password" name="password" v-model="p.password" @keyup.enter="registerMobile" type="password" placeholder="设置登录密码，不少于6位" v-if="page ==='register'"/>
             </div>
             <button type="button" class="submit" @click="registerMobile"><span v-if="bindType ==='cellphone'">确定</span><span v-else-if="page ==='mobile'">登录</span><span v-else-if="page ==='register'">注册</span></button>
@@ -132,6 +133,7 @@ export default {
         phone: '',
         password: ''
       },
+      validate: false,
       // qq
       qqUrl: '',
       isAccount: false,
@@ -262,13 +264,14 @@ export default {
         success: function(res) {
           if (res.success) {
             ctx.page = 'message'
+            ctx.validate = false
             ctx.mobile()
           } else {
             ctx.page = 'register'
             if(res.msg === '该用户已经存在'){
-              alert('该手机号已经注册')
+              ctx.validate = true
             } else {
-              alert(res.msg)
+              console.log(res.msg)
             }
           }
         }
@@ -331,6 +334,7 @@ export default {
     mobileSubmit () {
       var ctx = this
       let test = /^1[3|4|5|7|8][0-9]\d{4,8}$/
+      if (this.validate) { return alert('该手机号已注册') }
       if (!test.test(this.p.phone)) { return alert('不是有效的手机号码！') }
       if (this.mobileCode === '') {
         return alert('请填写短信验证码')
