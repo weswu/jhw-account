@@ -51,7 +51,7 @@
           <!-- 手机登录 -->
           <div class="f-register" v-if="page ==='register'||page ==='mobile'">
             <div class="f-input">
-              <input :class="page==='register'?'username':''" name="phone" v-model="p.phone" @keyup.enter="registerMobile" type="text" placeholder="手机号" @change="isUseAccout"/>
+              <input :class="page==='register'?'username':''" name="phone" v-model="p.phone" @keyup.enter="registerMobile" type="text" placeholder="手机号"/>
               <span class="forget-password" style="color: red"  v-if="page ==='register'&&validate">该手机号已注册</span>
               <input class="password" name="password" v-model="p.password" @keyup.enter="registerMobile" type="password" placeholder="设置登录密码，不少于6位" v-if="page ==='register'"/>
             </div>
