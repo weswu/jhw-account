@@ -177,6 +177,7 @@ export default {
     }
     // 重新绑定
     if (this.getUrlParam('isAccount') === '1') {
+      this.mobile()
       this.isAccount = true
     }
     // 解决后端请求不到带有#/hash的网址的相关参数问题
