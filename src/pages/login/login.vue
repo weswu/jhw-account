@@ -826,4 +826,9 @@ export default {
       width: 100%;height: 554px;border: none;
     }
   }
+  input:-webkit-autofill,
+  textarea:-webkit-autofill,
+  select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px white inset;
+  }
 </style>
