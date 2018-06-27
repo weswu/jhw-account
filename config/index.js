@@ -4,7 +4,7 @@ var glob = require('glob')
 var build = {
   env: require('./prod.env'),
   assetsRoot: path.resolve(__dirname, '../dist'),
-  assetsSubDirectory: 'static',
+  assetsSubDirectory: 'account',
   assetsPublicPath: './',
   productionSourceMap: true,
   productionGzip: false,
