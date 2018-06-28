@@ -3,6 +3,7 @@
     <div class="header">
       <div class="wapper">
         <a href="http://www.jihui88.com"><img src="http://www.jihui88.com/member/static/images/logo2.jpg" alt=""></a>
+        <span class="version">{{version}}</span>
       </div>
     </div>
     <div class="content">
@@ -138,7 +139,9 @@ export default {
       qqUrl: '',
       isAccount: false,
       isMobile: false, // 小于400的窗口
-      isAppMobile: false // 在手机上的窗口
+      isAppMobile: false, // 在手机上的窗口
+      version: 'v3',
+      websiteUlr: 'http://www.jihui88.com/member/'
     }
   },
   created () {
@@ -149,10 +152,14 @@ export default {
     this.oauthtype = this.getUrlParam('oauthtype') || ''
     // 后端控制的重定向（用于授权登录），前端无需关注
     this.model.redirectURL = this.getUrlParam('redirectURL') || ''
+    if (location.pathname.indexOf('manage_v4') > -1) {
+      this.version = 'v4'
+      this.websiteUlr = 'http://www.jihui88.com/manage_v4/'
+    }
     // 前端控制的返回页面, 从哪个子项目里进来的授权成功后将返回到backURL
-    this.backURL = this.getUrlParam('backURL') ? (this.getUrlParam('backURL') + (location.hash ? location.hash : '')) : null
+    this.backURL = this.getUrlParam('backURL') ? (this.getUrlParam('backURL') + (location.hash ? location.hash : '')) : (this.websiteUlr + 'index.html#/')
     // 系统控制的授权返回地址
-    this.oauthBackURL = this.getUrlParam('oauthBackURL') || 'http://www.jihui88.com/member/qqRedirect.html'
+    this.oauthBackURL = this.getUrlParam('oauthBackURL') || (this.websiteUlr + 'qqRedirect.html')
     // 授权类型范围， 比如snsapi_login_pc   网页端授权， snsapi_login_quick  弹出框形式授权
     this.scope = this.getUrlParam('scope') ? this.getUrlParam('scope') : null
     // 系统分配
@@ -204,7 +211,7 @@ export default {
     window.addEventListener('message', function (e) {
       var data = e.data || {}
       if (data.type === 1) {
-        window.location.href = ctx.backURL ? ctx.backURL.replace('@**@', '#') : ctx.model.redirectURL ? (ctx.model.redirectURL + (ctx.model.redirectURL.indexOf('?') > -1 ? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : 'http://www.jihui88.com/member/index.html'
+        window.location.href = ctx.backURL ? ctx.backURL.replace('@**@', '#') : ctx.model.redirectURL ? (ctx.model.redirectURL + (ctx.model.redirectURL.indexOf('?') > -1 ? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state) : (ctx.websiteUlr + 'index.html')
       }
       if (data.type === 'bind') {
         ctx.page = 'bind'
@@ -360,7 +367,7 @@ export default {
               window.location.href=res.attributes.data
               return
             }
-            window.location.href = ctx.backURL ? ctx.backURL.replace('@**@', '#') : ctx.model.redirectURL ? (ctx.model.redirectURL + (ctx.model.redirectURL.indexOf('?') > -1 ? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : 'http://www.jihui88.com/member/index.html'
+            window.location.href = ctx.backURL ? ctx.backURL.replace('@**@', '#') : ctx.model.redirectURL ? (ctx.model.redirectURL + (ctx.model.redirectURL.indexOf('?') > -1 ? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : (ctx.websiteUlr + 'index.html')
           } else if (res && res.msg) {
             alert(res.msg)
             ctx.refreshCode()
@@ -395,7 +402,7 @@ export default {
         success: function(res) {
           if (res.success) {
             // 判断是否存在backURL? [说明是普通跳转] : [是否存在redirectUrl? 是[[说明是授权登录，需要跳转到redirectURL地址，并带上code与state参数]] : 否 [[跳转到用户后台首页]] ]
-            window.location.href =ctx.backURL? ctx.backURL.replace('@**@', '#') : ctx.model.redirectURL? (ctx.model.redirectURL+(ctx.model.redirectURL.indexOf('?') > -1? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : "http://www.jihui88.com/member/index.html"
+            window.location.href =ctx.backURL? ctx.backURL.replace('@**@', '#') : ctx.model.redirectURL? (ctx.model.redirectURL+(ctx.model.redirectURL.indexOf('?') > -1? '&' : '?') + 'code=' + res.attributes.code + '&state=' + res.attributes.state ) : (ctx.websiteUlr + 'index.html')
           } else{
             alert(res.msg)
             ctx.refreshCode()
@@ -538,6 +545,13 @@ export default {
       margin: 0 auto;
       img{
         margin-top: 15px
+      }
+      .version{
+        color: #fff;
+        font-size: 12px;
+        background: #ff5b00;
+        padding: 0px 4px;
+        border-radius: 3px;
       }
     }
   }
