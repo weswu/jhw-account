@@ -141,7 +141,7 @@ export default {
       isMobile: false, // 小于400的窗口
       isAppMobile: false, // 在手机上的窗口
       version: 'v3',
-      websiteUlr: 'http://www.jihui88.com/member/'
+      websiteUlr: 'http://www.jihui88.com/manage_v3/'
     }
   },
   created () {
@@ -543,6 +543,7 @@ export default {
     .wapper{
       width: 1000px;
       margin: 0 auto;
+      position: relative;
       img{
         margin-top: 15px
       }
@@ -552,6 +553,9 @@ export default {
         background: #ff5b00;
         padding: 0px 4px;
         border-radius: 3px;
+        position: absolute;
+        top: 37px;
+        left: 125px;
       }
     }
   }
