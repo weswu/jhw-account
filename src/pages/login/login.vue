@@ -31,11 +31,11 @@
             <div class="f-input">
               <input class="username" name="username" v-model="model.username" @keyup.enter="submit" type="text" placeholder="手机号／账号"/>
               <input class="username" name="subusername" v-model="model.subusername" @keyup.enter="submit" type="text" placeholder="请输入员工账号" v-if="checked"/>
-              <div class="">
+              <div style="position: relative;">
                 <input class="password username" name="password" v-model="model.password" @keyup.enter="submit" type="password" placeholder="请输入密码"/>
                 <a class="forget-password" target="_blank" href="http://www.jihui88.com/member/forget_password.html">重设密码</a>
               </div>
-              <div class="">
+              <div style="position: relative;">
                 <input type="text" name="randCode" v-model="model.randCode" @keyup.enter="submit" placeholder="填写验证码">
                 <img class="veriImg" :src="'http://www.jihui88.com/alphveriImg'+verifyPic"  @click="refreshCode"/>
               </div>
@@ -686,7 +686,8 @@ export default {
     .veriImg{
       position: absolute;
       right: 14px;
-      margin-top: -31px;width: 65px;
+      top: 6px;
+      width: 65px;
     }
     .f-checkout-select{
       width: 10px;height: 10px;display: inline-block; margin-right: 5px;
@@ -722,7 +723,7 @@ export default {
       color: #ccc;
       font-size: 12px;
       right: 15px;
-      margin-top: -26px;
+      top: 10px;
     }
   }
   .submit{
