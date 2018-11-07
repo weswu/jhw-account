@@ -2,14 +2,14 @@
   <div :class="isMobile?'userAgent':''">
     <div class="header">
       <div class="wapper">
-        <a href="http://www.jihui88.com"><img src="http://www.jihui88.com/member/static/images/logo2.jpg" alt=""></a>
+        <a :href="host"><img :src="logo.loginLogo1" alt=""></a>
         <span class="version">{{version}}</span>
       </div>
     </div>
     <div class="content">
-      <div class="wapper">
+      <div class="wapper" :style="'background:url(' + logo.loginLogo2 + ') no-repeat 20px 85px'">
         <div class="form">
-          <img src="http://www.jihui88.com/member/static/images/f-logo.png" alt="" class="logo">
+          <img :src="logo.loginLogo3" alt="" class="logo">
           <div class="f-init" v-if="page !=='login' && page !=='register' && page !=='mobile' && page !=='message' && page !== 'mobileLogin' && page !== 'bind'">
             <a @click="page='login'" href="javascript:;" class="f-btn">手机号／账号 登录</a>
             <a @click="page='register'" href="javascript:;" class="f-btn">注册</a>
@@ -37,7 +37,7 @@
               </div>
               <div style="position: relative;">
                 <input type="text" name="randCode" v-model="model.randCode" @keyup.enter="submit" placeholder="填写验证码">
-                <img class="veriImg" :src="'http://www.jihui88.com/alphveriImg'+verifyPic"  @click="refreshCode"/>
+                <img class="veriImg" :src="'/alphveriImg'+verifyPic"  @click="refreshCode"/>
               </div>
             </div>
             <div class="f-checkbox">
@@ -66,7 +66,7 @@
             <input v-if="page === 'bind'" class="username" name="phone" v-model="p.phone" @keyup.enter="mobileSubmit" type="text" placeholder="请输入手机号" style="width: 228px;"/>
             <div v-if="!isCode">
               <input class="randCode" type="text" name="randCode" v-model="model.randCode" @keyup.enter="mobileSubmit" placeholder="图片验证码">
-              <img class="veriImg" :src="'http://www.jihui88.com/alphveriImg'+verifyPic"  @click="refreshCode" />
+              <img class="veriImg" :src="'/alphveriImg'+verifyPic"  @click="refreshCode" />
               <span class="refresh-btn" @click="refreshCode" title="看不清？点击换一张"></span>
             </div>
             <div v-if="isCode">
@@ -141,7 +141,14 @@ export default {
       isMobile: false, // 小于400的窗口
       isAppMobile: false, // 在手机上的窗口
       version: 'v3',
-      websiteUlr: 'http://www.jihui88.com/manage_v3/'
+      websiteUlr: 'http://www.jihui88.com/manage_v3/',
+      // 头像
+      logo: {
+        loginLogo1: 'http://www.jihui88.com/member/static/images/logo2.jpg',
+        loginLogo2: 'http://www.jihui88.com/member/static/images/bg.png',
+        loginLogo3: 'http://www.jihui88.com/member/static/images/f-logo.png'
+      },
+      host: 'http://www.jihui88.com'
     }
   },
   created () {
@@ -193,6 +200,7 @@ export default {
     if (this.backURL){
       this.backURL = this.backURL.replace('#', '@**@')
     }
+    if (location.host !== 'www.jihui88.com') { this.getLogo() }
   },
   mounted: function () {
     var ctx = this
@@ -246,6 +254,30 @@ export default {
     }
   },
   methods: {
+    getLogo () {
+      var ctx = this
+      $.ajax({
+        url: '/rest/api/agent/config/getConfigByDomain',
+        data: {
+          'domain': location.host
+        },
+        success: function(res) {
+          if (res.success) {
+            let data = res.attributes.data
+            if (data.loginLogo1) data.loginLogo1 = 'http://img.jihui88.com/' + data.loginLogo1
+            if (data.loginLogo2) data.loginLogo2 = 'http://img.jihui88.com/' + data.loginLogo2
+            if (data.loginLogo3) data.loginLogo3 = 'http://img.jihui88.com/' + data.loginLogo3
+            ctx.logo = data
+            ctx.host = location.origin
+          } else {
+            alert(res.msg)
+            setTimeout(function() {
+              window.location.href = 'http://www.jihui88.com/404'
+            }, 5000)
+          }
+        }
+      })
+    },
     // 1.手机注册
     registerMobile () {
       var ctx = this
