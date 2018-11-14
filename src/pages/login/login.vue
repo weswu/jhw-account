@@ -7,7 +7,8 @@
       </div>
     </div>
     <div class="content">
-      <div class="wapper" :style="'background:url(' + logo.loginLogo2 + ') no-repeat 20px 85px'">
+      <div class="wapper">
+        <img :src="logo.loginLogo2" alt="" class="banner">
         <div class="form">
           <img :src="logo.loginLogo3" alt="" class="logo">
           <div class="f-init" v-if="page !=='login' && page !=='register' && page !=='mobile' && page !=='message' && page !== 'mobileLogin' && page !== 'bind'">
@@ -161,7 +162,7 @@ export default {
     this.model.redirectURL = this.getUrlParam('redirectURL') || ''
     if (location.pathname.indexOf('manage_v4') > -1) {
       this.version = 'v4'
-      this.websiteUlr = 'http://www.jihui88.com/manage_v4/'
+      this.websiteUlr = location.origin + '/manage_v4/'
     }
     // 前端控制的返回页面, 从哪个子项目里进来的授权成功后将返回到backURL
     this.backURL = this.getUrlParam('backURL') ? (this.getUrlParam('backURL') + (location.hash ? location.hash : '')) : (this.websiteUlr + 'index.html#/')
@@ -272,7 +273,7 @@ export default {
           } else {
             alert(res.msg)
             setTimeout(function() {
-              window.location.href = 'http://www.jihui88.com/404'
+              if (location.port !== '8072') window.location.href = 'http://www.jihui88.com/404'
             }, 5000)
           }
         }
@@ -553,7 +554,7 @@ export default {
     text-decoration: none;
   }
   .userAgent{
-    .header{
+    .header,.banner{
       display: none;
     }
     .content{
@@ -577,7 +578,8 @@ export default {
       margin: 0 auto;
       position: relative;
       img{
-        margin-top: 15px
+        margin-top: 15px;
+        max-height: 53px;
       }
       .version{
         color: #fff;
@@ -587,7 +589,7 @@ export default {
         border-radius: 3px;
         position: absolute;
         top: 37px;
-        left: 125px;
+        margin-left: 10px;
       }
     }
   }
@@ -598,6 +600,11 @@ export default {
       width: 1000px;
       margin: 0 auto;
       background: url(http://www.jihui88.com/member/static/images/bg.png) no-repeat 20px 85px;
+    }
+    .banner{
+      margin: 85px 0 0 20px;
+      max-width: 599px;
+      max-height: 420px;
     }
     // 表单
     .form{
@@ -614,6 +621,7 @@ export default {
       position: relative;
       .logo{
         margin: 82px auto 28px auto;
+        max-height: 80px;
       }
       .f-btn {
         display: block;
