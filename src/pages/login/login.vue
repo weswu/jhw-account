@@ -2,7 +2,7 @@
   <div :class="isMobile?'userAgent':''">
     <div class="header">
       <div class="wapper">
-        <a :href="host"><img :src="logo.loginLogo1" alt=""></a>
+        <a :href="'http://'+logo.bindUrl"><img :src="logo.loginLogo1" alt=""></a>
         <span class="version">{{version}}</span>
       </div>
     </div>
@@ -83,7 +83,7 @@
             </button>
           </div>
 
-          <a @click="init" href="javascript:;" class="back-other" v-if="page !=='init' && page !== 'weixin' && page !== 'qq' && !isAccount">返回<span v-if="page ==='login'||page ==='mobile'||page ==='mobileLogin'">其他</span>登录</a>
+          <a @click="init" href="javascript:;" class="back-other" v-if="page !=='init' && page !== 'weixin' && page !== 'qq' && !isAccount && host === 'www.jihui88.com'">返回<span v-if="page ==='login'||page ==='mobile'||page ==='mobileLogin'">其他</span>登录</a>
         </div>
       </div>
     </div>
@@ -145,14 +145,25 @@ export default {
       websiteUlr: 'http://www.jihui88.com/manage_v3/',
       // 头像
       logo: {
+        bindUrl: 'www.jihui88.com',
         loginLogo1: 'http://www.jihui88.com/member/static/images/logo2.jpg',
         loginLogo2: 'http://www.jihui88.com/member/static/images/bg.png',
         loginLogo3: 'http://www.jihui88.com/member/static/images/f-logo.png'
       },
-      host: 'http://www.jihui88.com'
+      host: location.host
+    }
+  },
+  beforeCreate() {
+    if (location.host === 'www.jihui88.com' || location.host === 'localhost:8072') {
+      document.getElementsByTagName("title")[0].innerText = '机汇网会员登录'
+      document.querySelector("link[rel*='icon']").href = 'http://cps.jihui88.com/static/img/favicon.ico'
     }
   },
   created () {
+    if (location.host !== 'www.jihui88.com') {
+      this.getLogo()
+      this.page = 'login'
+    }
     this.openid = this.getUrlParam('openid') || ''
     // 登录账号类型， 0为企业账号登录，1为员工账号登录
     this.type = this.getUrlParam('type') || ''
@@ -179,11 +190,10 @@ export default {
     // 注册来源
     this.model.domain = this.getUrlParam('domain')
     // 显示页面
-    this.page = this.getUrlParam('page') || 'init'
+    this.page = this.getUrlParam('page') || this.page
     // 注册
     this.p.phone = this.getUrlParam('phone') || ''
     this.p.password = this.getUrlParam('password') || ''
-
 
     if (this.scope === 'snsapi_login_quick'){
       this.isMobile = true
@@ -201,7 +211,6 @@ export default {
     if (this.backURL){
       this.backURL = this.backURL.replace('#', '@**@')
     }
-    if (location.host !== 'www.jihui88.com') { this.getLogo() }
   },
   mounted: function () {
     var ctx = this
@@ -263,21 +272,43 @@ export default {
           'domain': location.host
         },
         success: function(res) {
-          if (res.success) {
+          if (res.attributes) {
             let data = res.attributes.data
-            if (data.loginLogo1) data.loginLogo1 = 'http://img.jihui88.com/' + data.loginLogo1
-            if (data.loginLogo2) data.loginLogo2 = 'http://img.jihui88.com/' + data.loginLogo2
-            if (data.loginLogo3) data.loginLogo3 = 'http://img.jihui88.com/' + data.loginLogo3
-            ctx.logo = data
-            ctx.host = location.origin
-          } else {
-            alert(res.msg)
-            setTimeout(function() {
-              if (location.port !== '8072') window.location.href = 'http://www.jihui88.com/404'
-            }, 5000)
+            if (res.success && data) {
+              if (data.loginLogo1) data.loginLogo1 = 'http://img.jihui88.com/' + data.loginLogo1
+              if (data.loginLogo2) data.loginLogo2 = 'http://img.jihui88.com/' + data.loginLogo2
+              if (data.loginLogo3) data.loginLogo3 = 'http://img.jihui88.com/' + data.loginLogo3
+              ctx.logo = data
+              // ico
+              ctx.initIco(data.ico)
+              ctx.initTitle(data.user.enterprise.name)
+            } else {
+              ctx.initIco()
+              console.log('经销商:' + res.msg)
+              setTimeout(function() {
+                if (location.port !== '8072') window.location.href = 'http://www.jihui88.com/404'
+              }, 5000)
+            }
           }
         }
       })
+    },
+    initIco (ico) {
+      var link = document.querySelector("link[rel*='icon']") || document.createElement('link')
+      link.type = 'image/x-icon'
+      link.rel = 'shortcut icon'
+      link.href = ico ? ('http://img.jihui88.com/' + ico) : 'http://cps.jihui88.com/static/img/favicon.ico'
+      document.getElementsByTagName('head')[0].appendChild(link)
+    },
+    initTitle (title) {
+      if (title) {
+        title = title + '会员登录'
+        document.getElementsByTagName("title")[0].innerText = title
+        document.querySelector("meta[name='generator']").content = title
+        document.querySelector("meta[name='author']").content = title
+        document.querySelector("meta[name='keywords']").content = title
+        document.querySelector("meta[name='description']").content = title
+      }
     },
     // 1.手机注册
     registerMobile () {
@@ -446,6 +477,9 @@ export default {
     },
     pcLogin (skey, callback) {
       var url = "http://pc.jihui88.com/pc/skey.html?skey=" + skey;
+      if (this.host !== 'www.jihui88.com') {
+        url = "http://pc.ykyh.com/pc/skey.html?skey=" + skey
+      }
       var $iframe = $('<iframe src=""></iframe>')
       $('body').append($iframe)
       $iframe.attr('src', url)
@@ -599,7 +633,6 @@ export default {
       height: 600px;
       width: 1000px;
       margin: 0 auto;
-      background: url(http://www.jihui88.com/member/static/images/bg.png) no-repeat 20px 85px;
     }
     .banner{
       margin: 85px 0 0 20px;
