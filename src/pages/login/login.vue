@@ -2,15 +2,15 @@
   <div :class="isMobile?'userAgent':''">
     <div class="header">
       <div class="wapper">
-        <a :href="'http://'+logo.bindUrl"><img :src="logo.loginLogo1" alt=""></a>
+        <a :href="'http://'+agent.bindUrl"><img :src="agent.loginLogo1" alt=""></a>
         <span class="version">{{version}}</span>
       </div>
     </div>
     <div class="content">
       <div class="wapper">
-        <img :src="logo.loginLogo2" alt="" class="banner">
+        <img :src="agent.loginLogo2" alt="" class="banner">
         <div class="form">
-          <img :src="logo.loginLogo3" alt="" class="logo">
+          <img :src="agent.loginLogo3" alt="" class="logo">
           <div class="f-init" v-if="page !=='login' && page !=='register' && page !=='mobile' && page !=='message' && page !== 'mobileLogin' && page !== 'bind'">
             <a @click="page='login'" href="javascript:;" class="f-btn">手机号／账号 登录</a>
             <a @click="page='register'" href="javascript:;" class="f-btn">注册</a>
@@ -85,6 +85,13 @@
 
           <a @click="init" href="javascript:;" class="back-other" v-if="page !=='init' && page !== 'weixin' && page !== 'qq' && !isAccount && host === 'www.jihui88.com'">返回<span v-if="page ==='login'||page ==='mobile'||page ==='mobileLogin'">其他</span>登录</a>
         </div>
+        <div class="contact-service" v-if="agent.user.cellphone || agent.user.weixin || agent.user.qq || agent.user.phone">
+          联系客服：
+          <span v-if="agent.user.cellphone">手机（{{agent.user.cellphone}}）</span>
+          <span v-if="agent.user.weixin">，微信（{{agent.user.weixin}}）</span>
+          <span v-if="agent.user.qq">，QQ（{{agent.user.qq}}）</span>
+          <span v-if="agent.user.phone">，座机（{{agent.user.phone}}）</span>
+        </div>
       </div>
     </div>
     <div class="alert" v-if="page === 'qq' && !isMobile" v-drag>
@@ -144,11 +151,12 @@ export default {
       version: 'v3',
       websiteUlr: 'http://www.jihui88.com/manage_v3/',
       // 头像
-      logo: {
+      agent: {
         bindUrl: 'www.jihui88.com',
         loginLogo1: 'http://www.jihui88.com/member/static/images/logo2.jpg',
         loginLogo2: 'http://www.jihui88.com/member/static/images/bg.png',
-        loginLogo3: 'http://www.jihui88.com/member/static/images/f-logo.png'
+        loginLogo3: 'http://www.jihui88.com/member/static/images/f-logo.png',
+        user: {}
       },
       host: location.host
     }
@@ -278,7 +286,7 @@ export default {
               if (data.loginLogo1) data.loginLogo1 = 'http://img.jihui88.com/' + data.loginLogo1
               if (data.loginLogo2) data.loginLogo2 = 'http://img.jihui88.com/' + data.loginLogo2
               if (data.loginLogo3) data.loginLogo3 = 'http://img.jihui88.com/' + data.loginLogo3
-              ctx.logo = data
+              ctx.agent = data
               // ico
               ctx.initIco(data.ico)
               ctx.initTitle(data.user.enterprise.name)
@@ -583,6 +591,7 @@ export default {
   body {
     background: #fff;
     margin: 0;
+    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "\5FAE\8F6F\96C5\9ED1", Arial, sans-serif;
   }
   a {
     text-decoration: none;
@@ -633,6 +642,7 @@ export default {
       height: 600px;
       width: 1000px;
       margin: 0 auto;
+      position: relative;
     }
     .banner{
       margin: 85px 0 0 20px;
@@ -729,6 +739,16 @@ export default {
 
     .back-other:hover{
       text-decoration: underline;
+    }
+    .contact-service{
+      position: absolute;
+      bottom: 22px;
+      right: 0;
+      font-size: 12px;
+      color: #ffff;
+      opacity: 0.70;
+      filter:alpha(opacity=70);
+      font-family: 'Microsoft YaHei';
     }
   }
   .close{
