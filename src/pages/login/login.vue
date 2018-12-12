@@ -153,9 +153,6 @@ export default {
       // 头像
       agent: {
         bindUrl: 'www.jihui88.com',
-        loginLogo1: 'http://www.jihui88.com/member/static/images/logo2.jpg',
-        loginLogo2: 'http://www.jihui88.com/member/static/images/bg.png',
-        loginLogo3: 'http://www.jihui88.com/member/static/images/f-logo.png',
         user: {}
       },
       host: location.host
@@ -171,6 +168,10 @@ export default {
     if (location.host !== 'www.jihui88.com') {
       this.getLogo()
       this.page = 'login'
+    } else {
+      this.agent.loginLogo1 = 'http://www.jihui88.com/member/static/images/logo2.jpg'
+      this.agent.loginLogo2 = 'http://www.jihui88.com/member/static/images/bg.png'
+      this.agent.loginLogo3 = 'http://www.jihui88.com/member/static/images/f-logo.png'
     }
     this.openid = this.getUrlParam('openid') || ''
     // 登录账号类型， 0为企业账号登录，1为员工账号登录
@@ -595,6 +596,9 @@ export default {
   }
   a {
     text-decoration: none;
+  }
+  img{
+    border:none;
   }
   .userAgent{
     .header,.banner{
