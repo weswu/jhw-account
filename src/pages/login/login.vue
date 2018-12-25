@@ -714,6 +714,7 @@ export default {
           color: #5b5b5b;
           font-size: 12px;
           box-sizing: border-box;
+          position: relative;
         }
       }
       .other-icon{
@@ -768,7 +769,8 @@ export default {
     position: absolute;
     bottom: 17px;
     width: 100px;
-    margin-left: -49px;
+    margin-left: 125px;
+    left: 0;
   }
   // 登录
   .f-login{
