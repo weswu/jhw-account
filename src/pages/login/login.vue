@@ -50,8 +50,8 @@
             </div>
             <button type="button" class="submit" @click="submit">登录</button>
           </div>
-          <!-- 手机登录 -->
-          <div class="f-register" v-if="page ==='register'||page ==='mobile'">
+          <!-- 手机登录、注册 -->
+          <div class="f-register" v-if="page ==='register'|| page ==='mobile'">
             <div class="f-input">
               <input :class="page==='register'?'username':''" name="phone" v-model="p.phone" @keyup.enter="registerMobile" type="text" placeholder="手机号"/>
               <span class="forget-password" style="color: red"  v-if="page ==='register'&&validate">该手机号已注册</span>
@@ -83,7 +83,11 @@
             </button>
           </div>
 
-          <a @click="init" href="javascript:;" class="back-other" v-if="page !=='init' && page !== 'weixin' && page !== 'qq' && !isAccount && host === 'www.jihui88.com'">返回<span v-if="page ==='login'||page ==='mobile'||page ==='mobileLogin'">其他</span>登录</a>
+          <a @click="init" href="javascript:;" class="back-other" v-if="page !=='init' && page !== 'weixin' && page !== 'qq' && !isAccount && host === 'www.jihui88.com'">
+            返回<span v-if="page ==='login'||page ==='mobile'||page ==='mobileLogin'">其他</span>登录
+          </a>
+          <a @click="page = 'login'" href="javascript:;" class="back-other" v-if="agent.openCellphoneRegister === '01' && page === 'register'">登录</a>
+          <a @click="page = 'register'" href="javascript:;" class="back-other" v-if="agent.openCellphoneRegister === '01' && page === 'login'">注册</a>
         </div>
         <div class="contact-service" v-if="agent.user.cellphone || agent.user.weixin || agent.user.qq || agent.user.phone">
           联系客服：
@@ -390,6 +394,7 @@ export default {
         type: 'post',
         url: '/rest/api/user/sendCellphone',
         data: {
+          agentId: this.agent.agentId,
           cellphone: this.p.phone,   // 手机号码(必填)
           state: this.state,    // 第一步里获取到的state参数(必填)
           randCode: this.model.randCode  // 图像验证码(必填)
@@ -432,7 +437,8 @@ export default {
           backURL: this.backURL,  // 登录成功后的跳转地址
           username: this.p.phone,
           password: this.p.password,
-          domain: this.model.domain
+          domain: this.model.domain,
+          agentId: this.agent.agentId
         },
         success: function(res) {
           if (res && res.success) {
